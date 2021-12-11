@@ -1,3 +1,7 @@
+:root {
+  --box-shadow-main: 0px 3px 15px 1px rgba(56, 56, 116, 0.3);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

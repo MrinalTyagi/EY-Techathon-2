@@ -15,9 +15,12 @@ import {
   ToggleButton,
 } from 'react-bootstrap';
 import { FaArrowUp } from 'react-icons/fa';
+import MapBox from '../components/MapBox';
+
+// const token = `sk.eyJ1IjoiYWF2YWlnMjA2OSIsImEiOiJja3gyNmU5dWMwOGNwMm5xazJsbTJkdndsIn0.P8U1m-KogLxOchRCfvY60Q`;
 
 function MapPage() {
-  const [mapSelected, setMapSelected] = useState('Normal View');
+  const [normalSelected, setNormalSelected] = useState(true);
 
   return (
     <React.Fragment>
@@ -41,7 +44,10 @@ function MapPage() {
                     />
                   </Card.Body>
                 </Card> */}
-                <div className='left-container__heading'>
+                <div
+                  className='left-container__heading'
+                  onClick={(e) => console.log('Clicked')}
+                >
                   <h1>DASHBOARD</h1>
                 </div>
                 <div className='left-container__top--tags'>
@@ -127,15 +133,39 @@ function MapPage() {
               position: 'relative',
             }}
           >
-            <ButtonGroup
-              aria-label='Basic example'
-              className='map-toggle-buttons'
-              onClick={(e) => console.log(e.target.value)}
-            >
-              <Button variant='secondary'>Normal View</Button>
-              <Button variant='secondary'>Sat. View</Button>
-            </ButtonGroup>
-            <GeoChart data={data} />
+            <div className='map-toggle-buttons'>
+              <Button
+                variant='primary'
+                onClick={() => setNormalSelected(true)}
+                // onClick={(e) => console.log('Clicked')}
+              >
+                Normal View
+              </Button>
+              <Button
+                variant='secondary'
+                onClick={(e) => setNormalSelected(false)}
+              >
+                Satellite View
+              </Button>
+            </div>
+            {/* {mapSelected === 'Normal View' ? (
+              <>
+                <GeoChart data={data} />
+              </>
+            ) : (
+              <>
+                <MapBox />
+              </>
+            )} */}
+            {normalSelected ? (
+              <>
+                <GeoChart data={data} />
+              </>
+            ) : (
+              <>
+                <MapBox />
+              </>
+            )}
           </Col>
 
           {/* col-right */}
@@ -145,8 +175,8 @@ function MapPage() {
                 <Card
                   bg='light'
                   // border='light'
-                  style={{ width: '90%' }}
-                  className='mb-2 right-container__top'
+                  style={{ width: '90%', border: '1px transparent' }}
+                  className='mb-2 right-container__top box-shadow-main'
                 >
                   <Card.Body>
                     <Card.Img
@@ -159,7 +189,7 @@ function MapPage() {
                 <Card
                   bg='light'
                   style={{ width: '90%' }}
-                  className='mb-2 right-container__bottom'
+                  className='mb-2 right-container__bottom box-shadow-main global-card-styles'
                   // border='light'
                 >
                   <Card.Body>
@@ -216,12 +246,14 @@ function MapPage() {
             </Row>
           </Col>
         </Row>
+
+        {/* 4-cards */}
         <Row className='map-page-row'>
-          <Col>
+          <Col className='container-card'>
             <Card
               bg='light'
               style={{ width: '90%' }}
-              className='mb-2 right-container__bottom'
+              className='mb-2 right-container__bottom box-shadow-main global-card-styles'
               // border='light'
             >
               <Card.Body>
@@ -275,11 +307,11 @@ function MapPage() {
               </Card.Body>
             </Card>
           </Col>
-          <Col>
+          <Col className='container-card'>
             <Card
               bg='light'
               style={{ width: '90%' }}
-              className='mb-2 right-container__bottom'
+              className='mb-2 right-container__bottom box-shadow-main global-card-styles'
               // border='light'
             >
               <Card.Body>
@@ -333,11 +365,11 @@ function MapPage() {
               </Card.Body>
             </Card>
           </Col>
-          <Col>
+          <Col className='container-card'>
             <Card
               bg='light'
               style={{ width: '90%' }}
-              className='mb-2 right-container__bottom'
+              className='mb-2 right-container__bottom box-shadow-main global-card-styles'
               // border='light'
             >
               <Card.Body>
@@ -391,11 +423,11 @@ function MapPage() {
               </Card.Body>
             </Card>
           </Col>
-          <Col>
+          <Col className='container-card'>
             <Card
               bg='light'
               style={{ width: '90%' }}
-              className='mb-2 right-container__bottom'
+              className='mb-2 right-container__bottom box-shadow-main global-card-styles'
               // border='light'
             >
               <Card.Body>
