@@ -6,14 +6,37 @@ function MapBox() {
   const loadMap = () => {
     mapboxgl.accessToken =
       'pk.eyJ1IjoiYWF2YWlnMjA2OSIsImEiOiJja3gyNjhkdG0xOTljMnBueTluZnA0YzFzIn0.eZB9Au7ertDodRUyEVQHZQ';
-    // var map = new mapboxgl.Map({
-    //   container: 'mapbox-map',
-    //   // style: 'mapbox://styles/mapbox/satellite-v9',
-    //   style: 'mapbox://styles/mapbox/light-v10',
-    //   center: [78.9629, 20.5937],
-    //   zoom: 3.5,
-    //   minZoom: 3.5,
-    // });
+    var map = new mapboxgl.Map({
+      container: 'mapbox-map',
+      style: 'mapbox://styles/mapbox/satellite-v9',
+      // style: 'mapbox://styles/mapbox/light-v10',
+      center: [78.9629, 20.5937],
+      zoom: 3.5,
+      minZoom: 3.5,
+    });
+
+    map.on('load', () => {
+      const layers = map.getStyle().layers;
+      // Find the index of the first symbol layer in the map style
+      let firstSymbolId;
+      for (const layer of layers) {
+        if (layer === 'symbol') {
+          firstSymbolId = layer.id;
+          break;
+        }
+      }
+
+      map.addSource('drone', {
+        type: 'raster',
+        url: 'mapbox://aavaig2069.4p9dmkt8',
+      });
+
+      map.addLayer({
+        id: 'drone-layer',
+        type: 'raster',
+        source: 'drone',
+      });
+    });
 
     // map.on('load', () => {
     //   console.log('map loaded');
@@ -25,8 +48,6 @@ function MapBox() {
     //     url: 'mapbox://aavaig2069.4p9dmkt8',
     //   });
     //   map.addLayer({
-    //     id: 'terrain-data',
-    //     type: 'line',
     //     source: 'mapbox-terrain',
     //     'source-layer': 'contour',
     //     layout: {
@@ -40,38 +61,36 @@ function MapBox() {
     //   });
     // });
 
-    // mapboxgl.accessToken = 'pk.eyJ1IjoiZm9ybXVsYTQiLCJhIjoiY2lzNWl5N3RpMDNhYTNvcDFvNGVrZmZheCJ9.2X-n4Yk2XyxYqoPbP_IMnQ';
+    // mapboxgl.accessToken = 'pk.mapboxgl.accessToken = 'pk.eyJ1IjoiYWF2YWlnMjA2OSIsImEiOiJja3gyNjhkdG0xOTljMnBueTluZnA0YzFzIn0.eZB9Au7ertDodRUyEVQHZQ';
+    // const map = new mapboxgl.Map({
+    //   container: 'mapbox-map',
+    //   style: 'mapbox://styles/mapbox/satellite-v9',
+    //   center: [-88.13734351262877, 35.137451890638886],
+    //   zoom: 4,
+    // });
 
-    var map = new mapboxgl.Map({
-      container: 'mapbox-map',
-      maxZoom: 5.99,
-      minZoom: 4,
-      zoom: 5,
-      center: [-75.789, 41.874],
-      style: 'mapbox://styles/mapbox/satellite-v9',
-    });
+    // map.on('load', () => {
+    //   const layers = map.getStyle().layers;
+    //   // Find the index of the first symbol layer in the map style
+    //   let firstSymbolId;
+    //   for (const layer of layers) {
+    //     if (layer === 'symbol') {
+    //       firstSymbolId = layer.id;
+    //       break;
+    //     }
+    //   }
 
-    map.on('load', function () {
-      map.addSource('myImageSource', {
-        type: 'image',
-        url: 'radar.gif',
-        coordinates: [
-          [-80.425, 46.437],
-          [-71.516, 46.437],
-          [-71.516, 37.936],
-          [-80.425, 37.936],
-        ],
-      });
+    //   map.addSource('drone', {
+    //     type: 'raster',
+    //     url: 'mapbox://aavaig2069.4p9dmkt8',
+    //   });
 
-      map.addLayer({
-        id: 'overlay',
-        source: 'myImageSource',
-        type: 'raster',
-        paint: {
-          'raster-opacity': 0.85,
-        },
-      });
-    });
+    //   map.addLayer({
+    //     id: 'drone-layer',
+    //     type: 'raster',
+    //     source: 'drone',
+    //   });
+    // });
   };
 
   useEffect(() => {

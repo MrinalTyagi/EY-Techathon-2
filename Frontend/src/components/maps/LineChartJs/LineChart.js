@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
+
 import { Line as LineJS } from 'chart.js/auto';
 import { Line } from 'react-chartjs-2';
 
 const LineChart = ({ dataApi, forestCover, years }) => {
-  //   const [dataApi, setDataApi] = useState([]);
-  //   const [years, setYears] = useState([]);
-  //   const [forestCover, setForestCover] = useState([]);
-  //   let years = [];
-  //   let forestCover = [];
-
   const fetchData = async () => {
     const response = await fetch('http://127.0.0.1:5000/', {
       headers: {
@@ -91,7 +86,7 @@ const LineChart = ({ dataApi, forestCover, years }) => {
                 },
               ],
             }}
-            height={120}
+            height={130}
             width={240}
             options={{
               maintainAspectRatio: false,
