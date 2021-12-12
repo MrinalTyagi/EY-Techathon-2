@@ -11,12 +11,19 @@ import {
   Container,
   Figure,
   Row,
+  Spinner,
   Table,
   ToggleButton,
 } from 'react-bootstrap';
 import { FaArrowUp } from 'react-icons/fa';
 import MapBox from '../components/MapBox';
 import LineChart from '../components/maps/LineChartJs/LineChart';
+import ComboChart from '../components/maps/ComboChart/ComboChart';
+import GaugeChart from '../components/maps/GaugeChart/GaugeChart';
+import PieChart from '../components/maps/PieChart/PieChart';
+import LineChart2 from '../components/maps/LineChartJs/LineChart2';
+import BarChart from '../components/maps/BarChart/BarChart';
+import LineChart3 from '../components/maps/LineChartJs/LineChart3';
 
 // const token = `sk.eyJ1IjoiYWF2YWlnMjA2OSIsImEiOiJja3gyNmU5dWMwOGNwMm5xazJsbTJkdndsIn0.P8U1m-KogLxOchRCfvY60Q`;
 
@@ -27,20 +34,7 @@ function MapPage() {
   const [dataApi, setDataApi] = useState([]);
   const [years, setYears] = useState([]);
   const [forestCover, setForestCover] = useState([]);
-
-  // const fetchData = async () => {
-  //   const response = await fetch('http://127.0.0.1:5000/', {
-  //     headers: {
-  //       'Access-Control-Allow-Origin': '*',
-  //       'Content-Type': 'application/json',
-  //     },
-  //   });
-
-  //   const data = await response.json();
-  //   console.log(data);
-
-  //   setIndiaData([data]);
-  // };
+  const [forestData, setForestData] = useState([]);
 
   const fetchData = async () => {
     const response = await fetch('http://127.0.0.1:5000/', {
@@ -51,18 +45,7 @@ function MapPage() {
     });
 
     const data = await response.json();
-    console.log(data.Data);
-
-    // console.log(
-    //   data['Data'].forEach((year) => year['Total Forest Cover Area'])
-    // );
-
-    // for( in data.Data){
-
-    // }
-    // Object.keys(data.Data).forEach((year) =>
-    //   console.log(year['Total Forest Cover Area'])
-    // );
+    // console.log(data.Data);
 
     setYears(Object.keys(data.Data));
 
@@ -72,27 +55,28 @@ function MapPage() {
       years.map((item) => data.Data[item]['Total Forest Cover Area'])
     );
 
-    // forestCover = years.map(
-    //   (item) => data.Data[item]['Total Forest Cover Area']
-    // );
+    console.log(data.Data[2019]['" Annual Rainfall"']);
 
-    // console.log(data.Data['2019']['Total Forest Cover Area']);
+    setDataApi([data.Data]);
 
-    console.log(years);
-    console.log(forestCover);
+    const arr = Object.keys(data.Data).map((year) => [
+      year,
+      data.Data[year]['Total Forest Cover Area'],
+      data.Data[year]['Very Dense Forest Area'],
+      data.Data[year]['Moderately Dense Forest Area'],
+      data.Data[year]['Mangrove Forest Area'],
+      data.Data[year]['Open Forest Area'],
+      data.Data[year]['Scrub Land Area'],
+    ]);
 
-    setDataApi([data]);
+    setForestData(arr);
+
+    // console.log(arr);
 
     // setIndiaData([data]);
   };
 
   useEffect(() => {
-    // const fetchAndSet = async () => {
-    //   console.log(indiaData);
-    //   await fetchData();
-    //   console.log(indiaData);
-    // };
-    // fetchAndSet();
     fetchData();
   }, [dataApi.length]);
 
@@ -104,22 +88,6 @@ function MapPage() {
           <Col style={{ height: '100%' }}>
             <Row style={{ height: '100%' }}>
               <Col style={{ height: '100%' }} className='left-container'>
-                <>
-                  {/* <Card
-                  bg='light'
-                  // border='light'
-                  style={{ width: '90%' }}
-                  className='mb-2 right-container__top'
-                >
-                  <Card.Body>
-                    <Card.Img
-                      variant='top'
-                      src='/pie-chart.png'
-                      style={{ height: '140px' }}
-                    />
-                  </Card.Body>
-                </Card> */}
-                </>
                 <div
                   className='left-container__heading'
                   onClick={(e) => console.log('Clicked')}
@@ -134,68 +102,7 @@ function MapPage() {
                   <h1>This is title</h1>
                   <p>This is a paragraph</p>
                 </div>
-                <>
-                  {/* <Card
-                  bg='light'
-                  style={{ width: '90%' }}
-                  className='mb-2 left-container__bottom'
-                  // border='light'
-                >
-                  <Card.Body>
-                    <Card.Img
-                      variant='top'
-                      src='/pie-chart.png'
-                      style={{ height: '100px' }}
-                    />
-
-                    <Card.Title>Total Count </Card.Title>
-                    <Card.Text>
-                      <Table striped bordered hover>
-                        <thead>
-                          <tr>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Username</th>
-                            <th>#</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>1</td>
-                          </tr>
-                          <tr>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                            <td>1</td>
-                          </tr>
-                          <tr>
-                            <td>Larry Bird</td>
-                            <td>Bird</td>
-                            <td>@twitter</td>
-                            <td>1</td>
-                          </tr>
-                          <tr>
-                            <td>Larry Bird</td>
-                            <td>Bird</td>
-                            <td>@twitter</td>
-                            <td>1</td>
-                          </tr>
-                          <tr>
-                            <td>Larry Bird</td>
-                            <td>Bird</td>
-                            <td>@twitter</td>
-                            <td>1</td>
-                          </tr>
-                        </tbody>
-                      </Table>
-                    </Card.Text>
-                  </Card.Body>
-                </Card> */}
-                </>
+                <></>
               </Col>
             </Row>
           </Col>
@@ -226,17 +133,7 @@ function MapPage() {
                 Satellite View
               </Button>
             </div>
-            <>
-              {/* {mapSelected === 'Normal View' ? (
-              <>
-                <GeoChart data={data} />
-              </>
-            ) : (
-              <>
-                <MapBox />
-              </>
-            )} */}
-            </>
+            <></>
             {normalSelected ? (
               <>
                 <GeoChart data={data} />
@@ -256,22 +153,35 @@ function MapPage() {
                   bg='light'
                   // border='light'
                   style={{
-                    width: '90%',
+                    width: '262px',
                     border: '1px transparent',
-                    height: '245px',
+                    height: '300px',
+                    overflow: 'hidden',
                   }}
                   className='mb-2 right-container__top box-shadow-main'
                 >
                   <Card.Body>
-                    {/* {indiaData.length !== 0 && <LineChart data={indiaData} />} */}
                     {dataApi.length === 0 ? (
-                      <>Loading</>
+                      <>
+                        <div
+                          className='spinner'
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: '100%',
+                          }}
+                        >
+                          <Spinner animation='border' variant='primary' />
+                        </div>
+                      </>
                     ) : (
                       <>
-                        <LineChart
+                        <LineChart3
                           dataApi={dataApi}
                           forestCover={forestCover}
                           years={years}
+                          forestData={forestData}
                         />
                       </>
                     )}
@@ -284,7 +194,7 @@ function MapPage() {
                   // border='light'
                 >
                   <Card.Body>
-                    <Card.Img variant='top' src='/pie-chart.png' />
+                    <ComboChart />
 
                     <Card.Title>Total Count </Card.Title>
                     <Card.Text>
@@ -348,53 +258,9 @@ function MapPage() {
               // border='light'
             >
               <Card.Body>
-                <Card.Img variant='top' src='/pie-chart.png' />
+                <GaugeChart />
 
                 <Card.Title>Total Count </Card.Title>
-                <Card.Text>
-                  <Table striped bordered hover>
-                    <thead>
-                      <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
-                        <th>#</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Larry Bird</td>
-                        <td>Bird</td>
-                        <td>@twitter</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Larry Bird</td>
-                        <td>Bird</td>
-                        <td>@twitter</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Larry Bird</td>
-                        <td>Bird</td>
-                        <td>@twitter</td>
-                        <td>1</td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Card.Text>
               </Card.Body>
             </Card>
           </Col>
@@ -406,53 +272,9 @@ function MapPage() {
               // border='light'
             >
               <Card.Body>
-                <Card.Img variant='top' src='/pie-chart.png' />
+                <PieChart />
 
                 <Card.Title>Total Count </Card.Title>
-                <Card.Text>
-                  <Table striped bordered hover>
-                    <thead>
-                      <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
-                        <th>#</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Larry Bird</td>
-                        <td>Bird</td>
-                        <td>@twitter</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Larry Bird</td>
-                        <td>Bird</td>
-                        <td>@twitter</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Larry Bird</td>
-                        <td>Bird</td>
-                        <td>@twitter</td>
-                        <td>1</td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Card.Text>
               </Card.Body>
             </Card>
           </Col>
@@ -464,53 +286,9 @@ function MapPage() {
               // border='light'
             >
               <Card.Body>
-                <Card.Img variant='top' src='/pie-chart.png' />
+                <LineChart2 />
 
                 <Card.Title>Total Count </Card.Title>
-                <Card.Text>
-                  <Table striped bordered hover>
-                    <thead>
-                      <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
-                        <th>#</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Larry Bird</td>
-                        <td>Bird</td>
-                        <td>@twitter</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Larry Bird</td>
-                        <td>Bird</td>
-                        <td>@twitter</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Larry Bird</td>
-                        <td>Bird</td>
-                        <td>@twitter</td>
-                        <td>1</td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Card.Text>
               </Card.Body>
             </Card>
           </Col>
@@ -522,53 +300,9 @@ function MapPage() {
               // border='light'
             >
               <Card.Body>
-                <Card.Img variant='top' src='/pie-chart.png' />
+                <BarChart />
 
                 <Card.Title>Total Count </Card.Title>
-                <Card.Text>
-                  <Table striped bordered hover>
-                    <thead>
-                      <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
-                        <th>#</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Larry Bird</td>
-                        <td>Bird</td>
-                        <td>@twitter</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Larry Bird</td>
-                        <td>Bird</td>
-                        <td>@twitter</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Larry Bird</td>
-                        <td>Bird</td>
-                        <td>@twitter</td>
-                        <td>1</td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Card.Text>
               </Card.Body>
             </Card>
           </Col>

@@ -12,7 +12,7 @@ function MapBox() {
       // style: 'mapbox://styles/mapbox/light-v10',
       center: [78.9629, 20.5937],
       zoom: 3.5,
-      minZoom: 3.5,
+      minZoom: 3,
     });
 
     map.on('load', () => {
@@ -28,7 +28,10 @@ function MapBox() {
 
       map.addSource('drone', {
         type: 'raster',
-        url: 'mapbox://aavaig2069.4p9dmkt8',
+        // url: 'mapbox://aavaig2069.4p9dmkt8',
+        // url: 'mapbox://aavaig2069.1786uogx',
+        // url: 'mapbox://aavaig2069.570b2alb',
+        url: 'mapbox://aavaig2069.3d85qak1',
       });
 
       map.addLayer({
