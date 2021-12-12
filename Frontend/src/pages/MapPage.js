@@ -16,7 +16,7 @@ import {
 } from 'react-bootstrap';
 import { FaArrowUp } from 'react-icons/fa';
 import MapBox from '../components/MapBox';
-import LineChart from '../components/maps/lineChart/LineChart';
+import LineChart from '../components/maps/LineChartJs/LineChart';
 
 // const token = `sk.eyJ1IjoiYWF2YWlnMjA2OSIsImEiOiJja3gyNmU5dWMwOGNwMm5xazJsbTJkdndsIn0.P8U1m-KogLxOchRCfvY60Q`;
 
@@ -24,6 +24,23 @@ function MapPage() {
   const [normalSelected, setNormalSelected] = useState(true);
 
   const [indiaData, setIndiaData] = useState([]);
+  const [dataApi, setDataApi] = useState([]);
+  const [years, setYears] = useState([]);
+  const [forestCover, setForestCover] = useState([]);
+
+  // const fetchData = async () => {
+  //   const response = await fetch('http://127.0.0.1:5000/', {
+  //     headers: {
+  //       'Access-Control-Allow-Origin': '*',
+  //       'Content-Type': 'application/json',
+  //     },
+  //   });
+
+  //   const data = await response.json();
+  //   console.log(data);
+
+  //   setIndiaData([data]);
+  // };
 
   const fetchData = async () => {
     const response = await fetch('http://127.0.0.1:5000/', {
@@ -34,22 +51,50 @@ function MapPage() {
     });
 
     const data = await response.json();
-    console.log(data);
+    console.log(data.Data);
 
-    setIndiaData([data]);
+    // console.log(
+    //   data['Data'].forEach((year) => year['Total Forest Cover Area'])
+    // );
+
+    // for( in data.Data){
+
+    // }
+    // Object.keys(data.Data).forEach((year) =>
+    //   console.log(year['Total Forest Cover Area'])
+    // );
+
+    setYears(Object.keys(data.Data));
+
+    // years = Object.keys(data.Data);
+
+    setForestCover(
+      years.map((item) => data.Data[item]['Total Forest Cover Area'])
+    );
+
+    // forestCover = years.map(
+    //   (item) => data.Data[item]['Total Forest Cover Area']
+    // );
+
+    // console.log(data.Data['2019']['Total Forest Cover Area']);
+
+    console.log(years);
+    console.log(forestCover);
+
+    setDataApi([data]);
+
+    // setIndiaData([data]);
   };
 
   useEffect(() => {
-    const fetchAndSet = async () => {
-      console.log(indiaData);
-
-      await fetchData();
-
-      console.log(indiaData);
-    };
-
-    fetchAndSet();
-  }, []);
+    // const fetchAndSet = async () => {
+    //   console.log(indiaData);
+    //   await fetchData();
+    //   console.log(indiaData);
+    // };
+    // fetchAndSet();
+    fetchData();
+  }, [dataApi.length]);
 
   return (
     <React.Fragment>
@@ -210,11 +255,26 @@ function MapPage() {
                 <Card
                   bg='light'
                   // border='light'
-                  style={{ width: '90%', border: '1px transparent' }}
+                  style={{
+                    width: '90%',
+                    border: '1px transparent',
+                    height: '245px',
+                  }}
                   className='mb-2 right-container__top box-shadow-main'
                 >
                   <Card.Body>
                     {/* {indiaData.length !== 0 && <LineChart data={indiaData} />} */}
+                    {dataApi.length === 0 ? (
+                      <>Loading</>
+                    ) : (
+                      <>
+                        <LineChart
+                          dataApi={dataApi}
+                          forestCover={forestCover}
+                          years={years}
+                        />
+                      </>
+                    )}
                   </Card.Body>
                 </Card>
                 <Card
