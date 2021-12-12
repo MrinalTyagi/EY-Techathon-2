@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 client = MongoClient("mongodb://localhost:27017")
 db = client.ey
 
-dataset = pd.read_csv("Backend/Final_dataset.csv")
+dataset = pd.read_csv("Final_dataset.csv")
 
 dataset = dataset.fillna(0)
 
@@ -15,7 +15,7 @@ states = dataset["State/UT"].unique()
 
 col = [' Geographical Area', 'Total Forest Cover Area',
        'Very Dense', 'Moderately Dense', 'Open Forest', ' Scrub Land',
-       'Mangrove']
+       'Mangrove', 'SO2', 'NO2', 'RSPM', 'SPM', 'PM25','	Annual Rainfall']
 
 main_data = []
 for i in states:
@@ -30,11 +30,17 @@ for i in states:
         'Moderately Dense Forest Area' : float(j[5]),
         'Open Forest Area' : float(j[6]),
         'Scrub Land Area' : float(j[7]),
-        'Mangrove Forest Area' : float(j[8])
+        'Mangrove Forest Area' : float(j[8]),
+        'SO2' : float(j[9]),
+        'NO2' : float(j[10]),
+        'RSPM' : float(j[11]),
+        'SPM' : float(j[12]),
+        'PM25' : float(j[13]),
+        '	Annual Rainfall' : float(j[14])
     }
     year[f'{j[1]}'] = values
-    final["Region"] = i
-    final["Data"] = year
-  main_data.append(final) 
+    final['Region'] = i
+    final['Data'] = year
+  main_data.append(final)
 dashboard = db.dashboard
 dashboard.insert_many(main_data)
