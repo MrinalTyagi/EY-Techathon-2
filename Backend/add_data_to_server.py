@@ -36,7 +36,7 @@ for i in states:
         'RSPM' : float(j[11]),
         'SPM' : float(j[12]),
         'PM25' : float(j[13]),
-        '	Annual Rainfall' : float(j[14])
+        'Annual Rainfall' : float(j[14])
     }
     year[f'{j[1]}'] = values
     final['Region'] = i
