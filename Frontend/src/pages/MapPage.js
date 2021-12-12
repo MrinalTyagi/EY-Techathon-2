@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../App.css';
 import data from '../india.min.geo.json';
 import GeoChart from '../components/GeoChart';
@@ -16,11 +16,40 @@ import {
 } from 'react-bootstrap';
 import { FaArrowUp } from 'react-icons/fa';
 import MapBox from '../components/MapBox';
+import LineChart from '../components/maps/lineChart/LineChart';
 
 // const token = `sk.eyJ1IjoiYWF2YWlnMjA2OSIsImEiOiJja3gyNmU5dWMwOGNwMm5xazJsbTJkdndsIn0.P8U1m-KogLxOchRCfvY60Q`;
 
 function MapPage() {
   const [normalSelected, setNormalSelected] = useState(true);
+
+  const [indiaData, setIndiaData] = useState([]);
+
+  const fetchData = async () => {
+    const response = await fetch('http://127.0.0.1:5000/', {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    setIndiaData([data]);
+  };
+
+  useEffect(() => {
+    const fetchAndSet = async () => {
+      console.log(indiaData);
+
+      await fetchData();
+
+      console.log(indiaData);
+    };
+
+    fetchAndSet();
+  }, []);
 
   return (
     <React.Fragment>
@@ -30,7 +59,8 @@ function MapPage() {
           <Col style={{ height: '100%' }}>
             <Row style={{ height: '100%' }}>
               <Col style={{ height: '100%' }} className='left-container'>
-                {/* <Card
+                <>
+                  {/* <Card
                   bg='light'
                   // border='light'
                   style={{ width: '90%' }}
@@ -44,6 +74,7 @@ function MapPage() {
                     />
                   </Card.Body>
                 </Card> */}
+                </>
                 <div
                   className='left-container__heading'
                   onClick={(e) => console.log('Clicked')}
@@ -58,7 +89,8 @@ function MapPage() {
                   <h1>This is title</h1>
                   <p>This is a paragraph</p>
                 </div>
-                {/* <Card
+                <>
+                  {/* <Card
                   bg='light'
                   style={{ width: '90%' }}
                   className='mb-2 left-container__bottom'
@@ -118,6 +150,7 @@ function MapPage() {
                     </Card.Text>
                   </Card.Body>
                 </Card> */}
+                </>
               </Col>
             </Row>
           </Col>
@@ -148,7 +181,8 @@ function MapPage() {
                 Satellite View
               </Button>
             </div>
-            {/* {mapSelected === 'Normal View' ? (
+            <>
+              {/* {mapSelected === 'Normal View' ? (
               <>
                 <GeoChart data={data} />
               </>
@@ -157,6 +191,7 @@ function MapPage() {
                 <MapBox />
               </>
             )} */}
+            </>
             {normalSelected ? (
               <>
                 <GeoChart data={data} />
@@ -179,11 +214,7 @@ function MapPage() {
                   className='mb-2 right-container__top box-shadow-main'
                 >
                   <Card.Body>
-                    <Card.Img
-                      variant='top'
-                      src='/pie-chart.png'
-                      style={{ height: '120px' }}
-                    />
+                    {/* {indiaData.length !== 0 && <LineChart data={indiaData} />} */}
                   </Card.Body>
                 </Card>
                 <Card

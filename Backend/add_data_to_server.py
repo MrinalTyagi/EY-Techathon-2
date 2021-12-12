@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 client = MongoClient("mongodb://localhost:27017")
 db = client.ey
 
-dataset = pd.read_csv("Final_dataset.csv")
+dataset = pd.read_csv("Backend/Final_dataset.csv")
 
 dataset = dataset.fillna(0)
 

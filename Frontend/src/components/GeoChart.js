@@ -27,6 +27,7 @@ function GeoChart({ data, property }) {
       .data(data.features)
       .join('path')
       .on('click', (event, feature) => {
+        console.log(feature);
         setSelectedState(selectedState === feature ? null : feature);
       })
       .attr('class', 'state')
