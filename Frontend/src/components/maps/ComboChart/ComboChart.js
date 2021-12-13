@@ -30,7 +30,11 @@ function ComboChart({ comboChartData }) {
           ]}
           options={{
             title: 'Monthly Coffee Production by Country',
-            vAxis: { title: 'Annual Data' },
+            vAxis: {
+              title: 'Annual Data',
+              viewWindowMode: 'explicit',
+              viewWindow: { min: 0 },
+            },
             hAxis: { title: 'Year' },
             seriesType: 'bars',
             // series: { 5: { type: 'line' }, 3: { type: 'line' } },

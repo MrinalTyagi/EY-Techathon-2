@@ -32,6 +32,7 @@ function MapBox() {
         // url: 'mapbox://aavaig2069.1786uogx',
         // url: 'mapbox://aavaig2069.570b2alb',
         url: 'mapbox://aavaig2069.3d85qak1',
+        // url: 'mapbox://aavaig2069.bbyqr9xn',
       });
 
       map.addLayer({
