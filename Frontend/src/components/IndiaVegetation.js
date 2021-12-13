@@ -1,7 +1,15 @@
 import React from 'react';
-import logo from '../images/india_vegetation.gif';
+import indialogo from '../images/india_vegetation.gif';
+import himachalpradeshlogo from '../images/himachal_pradesh_vegetation.gif';
 
-function IndiaVegetation() {
+import gujaratlogo from '../images/gujarat_vegetation.gif';
+import tamilnadulogo from '../images/tamil_nadu_vegetation.gif';
+
+function IndiaVegetation({ area = 'india' }) {
+  //   let logo = require('/images/india_vegetation.gif');
+
+  const logo = `${area}logo`;
+
   return (
     <div style={{ height: '100%' }}>
       <img

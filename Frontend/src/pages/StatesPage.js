@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../App.css';
-import data from '../india.min.geo.json';
+// import data from '../india.min.geo.json';
 import GeoChart from '../components/GeoChart';
 import {
   Button,
@@ -30,6 +30,10 @@ import IndiaClimate from '../components/IndiaClimate';
 import CountUp from 'react-countup';
 
 function StatesPage() {
+  const params = useParams();
+
+  const data = require(`../geojson/${params.state.toLowerCase()}.geo.json`);
+
   const [normalSelected, setNormalSelected] = useState(true);
 
   const [indiaData, setIndiaData] = useState([]);
@@ -42,7 +46,6 @@ function StatesPage() {
   const [aqiParams, setAqiParams] = useState([]);
   const [aqiArr, setAqiArr] = useState([]);
   const [comboChartData, setComboChartData] = useState([]);
-  const params = useParams();
   const [inputYear, setInputYear] = useState(2022);
   const [inputArea, setInputArea] = useState('India');
   const [predictedResult, setPredictedResult] = useState(665688.922946932);
@@ -193,7 +196,7 @@ function StatesPage() {
               <Col style={{ height: '100%' }} className='left-container'>
                 <div className='left-container__heading'>
                   <h1>
-                    <useCountUp end={predictedResult} duration={5} delay={8} />
+                    <CountUp end={predictedResult} duration={5} delay={8} />
                     sq. km.
                   </h1>
                 </div>
@@ -309,7 +312,9 @@ function StatesPage() {
             )}
             {view === 'Vegetation Timelapse' && (
               <>
-                <IndiaVegetation />
+                <IndiaVegetation
+                  area={params.state.toLowerCase().replace(' ', '')}
+                />
               </>
             )}
             {view === 'Climate Timelapse' && (

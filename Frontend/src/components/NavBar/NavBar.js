@@ -2,8 +2,11 @@ import React from 'react';
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import './NavBar.css';
+import { useNavigate } from 'react-router-dom';
 
 function NavBar() {
+  const navigate = useNavigate();
+
   return (
     <>
       <Navbar
@@ -14,7 +17,10 @@ function NavBar() {
       >
         <Container>
           <div className='greenary-logo'></div>
-          <Navbar.Brand href='#home' className='navbar-nav--brand'>
+          <Navbar.Brand
+            className='navbar-nav--brand'
+            onClick={() => navigate(`/`)}
+          >
             GeoSis
           </Navbar.Brand>
 
