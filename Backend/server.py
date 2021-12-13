@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 from flask_cors import CORS
 from pymongo import MongoClient
+import pickle
+from sklearn.linear_model import LinearRegression
 
 client = MongoClient("mongodb://localhost:27017")
 db = client.ey
@@ -33,6 +35,26 @@ def get_state_data(variable):
 
     else:
         return "Invalid route"
+
+
+@app.route("/predict/TFA", methods=["POST"])
+def predict_total_forest():
+    year = request.data.get('year')
+    state = request.data.get('area')
+    # year = 88752.0
+    # state = "west bengal"
+    if(state.lower() in states):
+        for i in range(len(states)):
+            if(state.lower() == states[i]):
+                position = i
+        data = list(dashboard.find({"Region" : state_list[position]}, {'_id' : 0}))[0]
+        area = list(data["Data"].items())[0][1]['Geographical Area']
+    with open("Backend/tot_forest_area.pkl", 'rb') as f:
+        model = pickle.load(f)
+        values = [np.array([area, year])]
+        preds = model.predict(values)
+        return jsonify(preds[0][0])
+
 
 if __name__ == "__main__":
     app.run(debug=True)
