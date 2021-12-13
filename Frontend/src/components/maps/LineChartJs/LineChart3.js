@@ -7,7 +7,7 @@ function LineChart3({ dataApi, forestCover, years, forestData }) {
       {dataApi.length !== 0 && (
         <Chart
           width={'100%'}
-          height={'80%'}
+          height={'100%'}
           chartType='LineChart'
           loader={<div>Loading Chart</div>}
           data={[

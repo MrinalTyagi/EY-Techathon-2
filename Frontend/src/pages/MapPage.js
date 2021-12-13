@@ -35,6 +35,10 @@ function MapPage() {
   const [years, setYears] = useState([]);
   const [forestCover, setForestCover] = useState([]);
   const [forestData, setForestData] = useState([]);
+  const [forestDataArray, setForestDataArray] = useState([]);
+  const [rainfall, setRainfall] = useState([]);
+  const [aqiParams, setAqiParams] = useState([]);
+  const [comboChartData, setComboChartData] = useState([]);
 
   const fetchData = async () => {
     const response = await fetch('http://127.0.0.1:5000/', {
@@ -45,35 +49,80 @@ function MapPage() {
     });
 
     const data = await response.json();
-    // console.log(data.Data);
+
+    console.log(data.Data);
 
     setYears(Object.keys(data.Data));
-
-    // years = Object.keys(data.Data);
 
     setForestCover(
       years.map((item) => data.Data[item]['Total Forest Cover Area'])
     );
 
-    console.log(data.Data[2019]['" Annual Rainfall"']);
+    const annualRainfall = Object.keys(data.Data).map((year) => [
+      year,
+      data.Data[year]['Annual Rainfall'],
+    ]);
+
+    setRainfall(annualRainfall.filter((item) => item[1] !== 0));
 
     setDataApi([data.Data]);
 
-    const arr = Object.keys(data.Data).map((year) => [
+    const forestObj = Object.keys(data.Data).map((year) => {
+      return {
+        year,
+        TFC: data.Data[year]['Total Forest Cover Area'],
+        VDC: data.Data[year]['Very Dense Forest Area'],
+        MDC: data.Data[year]['Moderately Dense Forest Area'],
+        MFC: data.Data[year]['Mangrove Forest Area'],
+        OFA: data.Data[year]['Open Forest Area'],
+        SLA: data.Data[year]['Scrub Land Area'],
+      };
+    });
+
+    // console.log(forestObj);
+
+    const forestArr = Object.keys(data.Data).map((year) => {
+      return [
+        year,
+        data.Data[year]['Total Forest Cover Area'],
+        data.Data[year]['Very Dense Forest Area'],
+        data.Data[year]['Moderately Dense Forest Area'],
+        data.Data[year]['Mangrove Forest Area'],
+        data.Data[year]['Open Forest Area'],
+        data.Data[year]['Scrub Land Area'],
+      ];
+    });
+
+    // console.log(forestObj);
+    setForestData(forestObj);
+
+    setForestDataArray(forestArr);
+
+    const aqiVal = {
+      year: 2015,
+      SO2: data.Data['2015']['SO2'],
+      NO2: data.Data['2015']['NO2'],
+      RSPM: data.Data['2015']['RSPM'],
+      SPM: data.Data['2015']['SPM'],
+      PM25: data.Data['2015']['PM25'],
+    };
+    setAqiParams(aqiVal);
+
+    const comboData = Object.keys(data.Data).map((year) => [
       year,
       data.Data[year]['Total Forest Cover Area'],
-      data.Data[year]['Very Dense Forest Area'],
-      data.Data[year]['Moderately Dense Forest Area'],
-      data.Data[year]['Mangrove Forest Area'],
-      data.Data[year]['Open Forest Area'],
-      data.Data[year]['Scrub Land Area'],
+      data.Data[year]['Annual Rainfall'],
+      data.Data[year]['SPM'],
     ]);
 
-    setForestData(arr);
+    console.log(comboData);
+    setComboChartData(comboData);
 
-    // console.log(arr);
+    // const aqiVal =
 
-    // setIndiaData([data]);
+    // console.log(aqiVal);
+
+    // console.log(aqiVal[1][1]);
   };
 
   useEffect(() => {
@@ -155,7 +204,7 @@ function MapPage() {
                   style={{
                     width: '262px',
                     border: '1px transparent',
-                    height: '300px',
+                    height: '100%',
                     overflow: 'hidden',
                   }}
                   className='mb-2 right-container__top box-shadow-main'
@@ -181,7 +230,7 @@ function MapPage() {
                           dataApi={dataApi}
                           forestCover={forestCover}
                           years={years}
-                          forestData={forestData}
+                          forestData={forestDataArray}
                         />
                       </>
                     )}
@@ -194,10 +243,10 @@ function MapPage() {
                   // border='light'
                 >
                   <Card.Body>
-                    <ComboChart />
+                    <ComboChart comboChartData={comboChartData} />
 
                     <Card.Title>Total Count </Card.Title>
-                    <Card.Text>
+                    {/* <Card.Text>
                       <Table striped bordered hover>
                         <thead>
                           <tr>
@@ -240,7 +289,7 @@ function MapPage() {
                           </tr>
                         </tbody>
                       </Table>
-                    </Card.Text>
+                    </Card.Text> */}
                   </Card.Body>
                 </Card>
               </Col>
@@ -258,7 +307,7 @@ function MapPage() {
               // border='light'
             >
               <Card.Body>
-                <GaugeChart />
+                <GaugeChart aqiParams={aqiParams} />
 
                 <Card.Title>Total Count </Card.Title>
               </Card.Body>
@@ -272,7 +321,10 @@ function MapPage() {
               // border='light'
             >
               <Card.Body>
-                <PieChart />
+                <PieChart
+                  // forestData={forestDataArray}
+                  forestDataObject={forestData}
+                />
 
                 <Card.Title>Total Count </Card.Title>
               </Card.Body>
@@ -286,21 +338,7 @@ function MapPage() {
               // border='light'
             >
               <Card.Body>
-                <LineChart2 />
-
-                <Card.Title>Total Count </Card.Title>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col className='container-card'>
-            <Card
-              bg='light'
-              style={{ width: '90%' }}
-              className='mb-2 right-container__bottom box-shadow-main global-card-styles'
-              // border='light'
-            >
-              <Card.Body>
-                <BarChart />
+                <LineChart2 rainfall={rainfall} />
 
                 <Card.Title>Total Count </Card.Title>
               </Card.Body>
