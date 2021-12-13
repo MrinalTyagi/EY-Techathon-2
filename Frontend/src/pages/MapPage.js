@@ -111,8 +111,8 @@ function MapPage() {
     const comboData = Object.keys(data.Data).map((year) => [
       year,
       data.Data[year]['Total Forest Cover Area'],
-      data.Data[year]['Annual Rainfall'],
-      data.Data[year]['SPM'],
+      data.Data[year]['N_Annual_Rainfall'],
+      data.Data[year]['N_SPM'],
     ]);
 
     console.log(comboData);
@@ -246,50 +246,6 @@ function MapPage() {
                     <ComboChart comboChartData={comboChartData} />
 
                     <Card.Title>Total Count </Card.Title>
-                    {/* <Card.Text>
-                      <Table striped bordered hover>
-                        <thead>
-                          <tr>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Username</th>
-                            <th>#</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>1</td>
-                          </tr>
-                          <tr>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                            <td>1</td>
-                          </tr>
-                          <tr>
-                            <td>Larry Bird</td>
-                            <td>Bird</td>
-                            <td>@twitter</td>
-                            <td>1</td>
-                          </tr>
-                          <tr>
-                            <td>Larry Bird</td>
-                            <td>Bird</td>
-                            <td>@twitter</td>
-                            <td>1</td>
-                          </tr>
-                          <tr>
-                            <td>Larry Bird</td>
-                            <td>Bird</td>
-                            <td>@twitter</td>
-                            <td>1</td>
-                          </tr>
-                        </tbody>
-                      </Table>
-                    </Card.Text> */}
                   </Card.Body>
                 </Card>
               </Col>
