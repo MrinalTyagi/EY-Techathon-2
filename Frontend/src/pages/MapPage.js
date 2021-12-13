@@ -38,6 +38,7 @@ function MapPage() {
   const [forestDataArray, setForestDataArray] = useState([]);
   const [rainfall, setRainfall] = useState([]);
   const [aqiParams, setAqiParams] = useState([]);
+  const [aqiArr, setAqiArr] = useState([]);
   const [comboChartData, setComboChartData] = useState([]);
 
   const fetchData = async () => {
@@ -106,7 +107,23 @@ function MapPage() {
       SPM: data.Data['2015']['SPM'],
       PM25: data.Data['2015']['PM25'],
     };
+
+    const aqiValArr = Object.keys(data.Data).map((year) => {
+      return {
+        year: year,
+        SO2: data.Data[year]['SO2'],
+        NO2: data.Data[year]['NO2'],
+        RSPM: data.Data[year]['RSPM'],
+        SPM: data.Data[year]['SPM'],
+        PM25: data.Data[year]['PM25'],
+      };
+    });
+
     setAqiParams(aqiVal);
+
+    aqiValArr.forEach((val, idx) => console.log(aqiValArr[idx].year));
+
+    setAqiArr(aqiValArr);
 
     const comboData = Object.keys(data.Data).map((year) => [
       year,
@@ -115,7 +132,7 @@ function MapPage() {
       data.Data[year]['N_SPM'],
     ]);
 
-    console.log(comboData);
+    // console.log(comboData);
     setComboChartData(comboData);
 
     // const aqiVal =
@@ -263,7 +280,7 @@ function MapPage() {
               // border='light'
             >
               <Card.Body>
-                <GaugeChart aqiParams={aqiParams} />
+                <GaugeChart aqiParams={aqiParams} aqiArr={aqiArr} />
 
                 <Card.Title>Total Count </Card.Title>
               </Card.Body>
