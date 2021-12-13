@@ -30,12 +30,6 @@ function PieChart({ forestDataObject }) {
             chartType='PieChart'
             loader={<div>Loading Chart</div>}
             data={[
-              // ['Forest Cover', '%Cover'],
-              // ['VDC', calculate(99278)],
-              // ['MDC', calculate(398472)],
-              // ['MFC', calculate(4975)],
-              // ['OFA', calculate(304499)],
-              // ['SLA', calculate(42084)],
               ['Forest Cover', '%Cover'],
               ['VDC', calculate(forestDataObject[selectedIndex]['VDC'])],
               ['MDC', calculate(forestDataObject[selectedIndex]['MDC'])],
@@ -48,6 +42,19 @@ function PieChart({ forestDataObject }) {
               // Just add this option
               legend: 'none',
               //   is3D: true,
+              slices: {
+                0: { color: '#FEBA69' },
+                1: { color: '#FF718B' },
+                2: { color: '#999' },
+                3: { color: '#8675FF' },
+                4: { color: '#69FFBB' },
+              },
+              pieSliceTextStyle: {
+                color: 'black',
+              },
+              chartArea: {
+                backgroundColor: '#eee',
+              },
             }}
             rootProps={{ 'data-testid': '2' }}
           />

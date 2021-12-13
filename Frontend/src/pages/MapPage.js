@@ -41,6 +41,9 @@ function MapPage() {
   const [aqiArr, setAqiArr] = useState([]);
   const [comboChartData, setComboChartData] = useState([]);
 
+  const [inputYear, setInputYear] = useState('');
+  const [inputState, setInputState] = useState('');
+
   const fetchData = async () => {
     const response = await fetch('http://127.0.0.1:5000/', {
       headers: {
@@ -144,6 +147,31 @@ function MapPage() {
     // console.log(aqiVal[1][1]);
   };
 
+  const onSubmitPostRequest = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append('year', inputYear);
+    formData.append('area', inputState);
+
+    console.log(inputYear, inputState);
+
+    fetch('http://127.0.0.1:5000/predict/TFA', {
+      method: 'POST',
+      // mode: 'no-cors',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        // Accept: 'application/json',
+        // 'Content-Type': 'application/json',
+      },
+      // body: JSON.stringify({ year: inputYear, area: inputState }),
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  };
+
   useEffect(() => {
     fetchData();
   }, [dataApi.length]);
@@ -200,6 +228,19 @@ function MapPage() {
               >
                 Satellite View
               </Button>
+              {/* <Button
+                variant='primary'
+                onClick={() => setNormalSelected(true)}
+                // onClick={(e) => console.log('Clicked')}
+              >
+                Normal View
+              </Button>
+              <Button
+                variant='secondary'
+                onClick={(e) => setNormalSelected(false)}
+              >
+                Satellite View
+              </Button> */}
             </div>
             <></>
             {normalSelected ? (
@@ -316,6 +357,37 @@ function MapPage() {
                 <LineChart2 rainfall={rainfall} />
 
                 <Card.Title>Total Count </Card.Title>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col className='container-card'>
+            <Card
+              bg='light'
+              style={{ width: '90%' }}
+              className='mb-2 right-container__bottom box-shadow-main global-card-styles'
+              // border='light'
+            >
+              <Card.Body>
+                <div className=''>
+                  <input
+                    type='text'
+                    value={inputYear}
+                    onChange={(e) => setInputYear(e.target.value)}
+                  />
+                </div>
+                <div className=''>
+                  <input
+                    type='text'
+                    value={inputState}
+                    onChange={(e) => setInputState(e.target.value)}
+                  />
+                </div>
+                <div className=''>
+                  <button type='submit' onClick={onSubmitPostRequest}>
+                    Go{' '}
+                  </button>
+                </div>
               </Card.Body>
             </Card>
           </Col>

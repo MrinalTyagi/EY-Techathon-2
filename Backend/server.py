@@ -39,8 +39,8 @@ def get_state_data(variable):
 
 @app.route("/predict/TFA", methods=["POST"])
 def predict_total_forest():
-    year = request.data.get('year')
-    state = request.data.get('area')
+    year = request.form.get('year')
+    state = request.form.get('area')
     # year = 88752.0
     # state = "west bengal"
     if(state.lower() in states):
@@ -53,7 +53,7 @@ def predict_total_forest():
         model = pickle.load(f)
         values = [np.array([area, year])]
         preds = model.predict(values)
-        return jsonify(preds[0][0])
+        return jsonify({"Result"  :  preds[0][0]} )
 
 
 @app.route("/all", methods=["GET"])

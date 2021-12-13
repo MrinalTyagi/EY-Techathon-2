@@ -34,7 +34,7 @@ function GeoChart({ data, property }) {
         navigate(`/${feature.properties['NAME_1']}`);
       })
       .attr('class', 'state')
-      .attr('fill', '#9673b9')
+      .attr('fill', '#add8e6')
       // .attr('fill-outline-color', 'rgba(250,180,195,1)')
       .attr('transform', 'scale(.98)')
       .transition()
