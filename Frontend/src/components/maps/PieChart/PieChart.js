@@ -8,7 +8,7 @@ function PieChart({ forestDataObject }) {
   const calculate = (val) => (val / 3287469) * 100;
 
   return (
-    <div>
+    <div style={{ overflow: 'hidden', height: '100%' }}>
       {forestDataObject.length !== 0 && (
         <>
           <div className='forest-data-selector'>
@@ -40,7 +40,8 @@ function PieChart({ forestDataObject }) {
             options={{
               // title: 'Forest Cover of 2019',
               // Just add this option
-              legend: 'none',
+              title: 'Distribution of Types of Land Cover',
+              // legend: 'non',
               //   is3D: true,
               slices: {
                 0: { color: '#FEBA69' },
@@ -52,8 +53,13 @@ function PieChart({ forestDataObject }) {
               pieSliceTextStyle: {
                 color: 'black',
               },
+              backgroundColor: 'transparent',
               chartArea: {
-                backgroundColor: '#eee',
+                width: '60%',
+                height: '60%',
+              },
+              legend: {
+                position: 'bottom',
               },
             }}
             rootProps={{ 'data-testid': '2' }}

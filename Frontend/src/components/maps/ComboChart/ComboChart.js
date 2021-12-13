@@ -3,7 +3,7 @@ import React from 'react';
 
 function ComboChart({ comboChartData }) {
   return (
-    <div>
+    <div style={{ overflowY: 'hidden', height: '80%' }}>
       {comboChartData.length !== 0 && (
         <Chart
           width={'100%'}
@@ -12,7 +12,7 @@ function ComboChart({ comboChartData }) {
           loader={<div>Loading Chart</div>}
           data={[['Year', 'TFC', 'AR', 'SPM'], ...comboChartData]}
           options={{
-            title: 'Monthly Coffee Production by Country',
+            title: 'Relation b/w TFC, AR, SPM',
             vAxis: {
               title: 'Annual Data',
               viewWindowMode: 'explicit',
@@ -23,6 +23,14 @@ function ComboChart({ comboChartData }) {
             // series: { 5: { type: 'line' }, 3: { type: 'line' } },
             //   series: {  },
             series: { 1: { type: 'line' }, 2: { type: 'line' } },
+            backgroundColor: 'transparent',
+            chartArea: {
+              width: '70%',
+              height: '73%',
+            },
+            legend: {
+              position: 'bottom',
+            },
           }}
           rootProps={{ 'data-testid': '1' }}
         />

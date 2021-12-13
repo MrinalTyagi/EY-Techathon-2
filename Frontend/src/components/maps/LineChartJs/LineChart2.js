@@ -12,11 +12,20 @@ function LineChart2({ rainfall }) {
           loader={<div>Loading Chart</div>}
           data={[['Year', 'Annual Rainfall'], ...rainfall]}
           options={{
+            title: 'Annual Rainfall Trendline',
             hAxis: {
               title: 'Time',
             },
             vAxis: {
-              title: 'Popularity',
+              title: 'Annual Rainfall',
+            },
+            backgroundColor: 'transparent',
+            chartArea: {
+              width: '70%',
+              height: '60%',
+            },
+            legend: {
+              position: 'bottom',
             },
           }}
           rootProps={{ 'data-testid': '1' }}

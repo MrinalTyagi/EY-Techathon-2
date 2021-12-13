@@ -9,6 +9,7 @@ import {
   Carousel,
   Col,
   Container,
+  Dropdown,
   Figure,
   Row,
   Spinner,
@@ -24,6 +25,8 @@ import PieChart from '../components/maps/PieChart/PieChart';
 import LineChart2 from '../components/maps/LineChartJs/LineChart2';
 import BarChart from '../components/maps/BarChart/BarChart';
 import LineChart3 from '../components/maps/LineChartJs/LineChart3';
+import IndiaVegetation from '../components/IndiaVegetation';
+import IndiaClimate from '../components/IndiaClimate';
 
 // const token = `sk.eyJ1IjoiYWF2YWlnMjA2OSIsImEiOiJja3gyNmU5dWMwOGNwMm5xazJsbTJkdndsIn0.P8U1m-KogLxOchRCfvY60Q`;
 
@@ -43,6 +46,7 @@ function MapPage() {
 
   const [inputYear, setInputYear] = useState('');
   const [inputState, setInputState] = useState('');
+  const [view, setView] = useState('Normal View');
 
   const fetchData = async () => {
     const response = await fetch('http://127.0.0.1:5000/', {
@@ -215,19 +219,6 @@ function MapPage() {
             }}
           >
             <div className='map-toggle-buttons'>
-              <Button
-                variant='primary'
-                onClick={() => setNormalSelected(true)}
-                // onClick={(e) => console.log('Clicked')}
-              >
-                Normal View
-              </Button>
-              <Button
-                variant='secondary'
-                onClick={(e) => setNormalSelected(false)}
-              >
-                Satellite View
-              </Button>
               {/* <Button
                 variant='primary'
                 onClick={() => setNormalSelected(true)}
@@ -241,15 +232,53 @@ function MapPage() {
               >
                 Satellite View
               </Button> */}
+              {/* <Button
+                variant='primary'
+                onClick={() => setNormalSelected(true)}
+                // onClick={(e) => console.log('Clicked')}
+              >
+                Normal View
+              </Button>
+              <Button
+                variant='secondary'
+                onClick={(e) => setNormalSelected(false)}
+              >
+                Satellite View
+              </Button> */}
+              <select
+                value={view}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  setView(e.target.value);
+                }}
+              >
+                <option value='Normal View'>Normal View</option>
+                <option value='Satellite View'>Satellite View</option>
+                <option value='Vegetation Timelapse'>
+                  Vegetation Timelapse
+                </option>
+                <option value='Climate Timelapse'>Climate Timelapse</option>
+              </select>
             </div>
             <></>
-            {normalSelected ? (
+            {view === 'Normal View' && (
               <>
                 <GeoChart data={data} />
               </>
-            ) : (
+            )}
+            {view === 'Satellite View' && (
               <>
                 <MapBox />
+              </>
+            )}
+            {view === 'Vegetation Timelapse' && (
+              <>
+                <IndiaVegetation />
+              </>
+            )}
+            {view === 'Climate Timelapse' && (
+              <>
+                <IndiaClimate />
               </>
             )}
           </Col>
@@ -305,7 +334,7 @@ function MapPage() {
                   <Card.Body>
                     <ComboChart comboChartData={comboChartData} />
 
-                    <Card.Title>Total Count </Card.Title>
+                    <Card.Title></Card.Title>
                   </Card.Body>
                 </Card>
               </Col>
@@ -325,7 +354,7 @@ function MapPage() {
               <Card.Body>
                 <GaugeChart aqiParams={aqiParams} aqiArr={aqiArr} />
 
-                <Card.Title>Total Count </Card.Title>
+                <Card.Title></Card.Title>
               </Card.Body>
             </Card>
           </Col>
@@ -342,7 +371,7 @@ function MapPage() {
                   forestDataObject={forestData}
                 />
 
-                <Card.Title>Total Count </Card.Title>
+                <Card.Title></Card.Title>
               </Card.Body>
             </Card>
           </Col>
@@ -356,7 +385,7 @@ function MapPage() {
               <Card.Body>
                 <LineChart2 rainfall={rainfall} />
 
-                <Card.Title>Total Count </Card.Title>
+                <Card.Title></Card.Title>
               </Card.Body>
             </Card>
           </Col>

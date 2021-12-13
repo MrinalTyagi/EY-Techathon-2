@@ -3,7 +3,7 @@ import Chart from 'react-google-charts';
 
 function LineChart3({ dataApi, forestCover, years, forestData }) {
   return (
-    <div style={{ overflowY: 'hidden' }}>
+    <div style={{ overflow: 'hidden', height: '100%' }}>
       {dataApi.length !== 0 && (
         <Chart
           width={'100%'}
@@ -16,18 +16,26 @@ function LineChart3({ dataApi, forestCover, years, forestData }) {
             ...forestData,
           ]}
           options={{
+            title: 'Types of Land Cover : TrendLine',
             hAxis: {
-              title: 'Time',
+              title: 'Year',
             },
             vAxis: {
-              title: 'Forest Area',
+              title: 'Forest Area (in sq. km.)',
               viewWindowMode: 'explicit',
               viewWindow: { min: 0 },
             },
             series: {
               1: { curveType: 'function' },
             },
-            backgroundColor: 'rgb(248,289,250)',
+            backgroundColor: 'transparent',
+            chartArea: {
+              width: '80%',
+              height: '60%',
+            },
+            legend: {
+              position: 'bottom',
+            },
           }}
           rootProps={{ 'data-testid': '2' }}
         />

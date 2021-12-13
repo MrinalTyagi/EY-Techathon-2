@@ -15,6 +15,8 @@ function GaugeChart({ aqiParams, aqiArr }) {
         justifyContent: 'center',
         width: '100%',
         flexDirection: 'column',
+        overflow: 'hidden',
+        height: '100%',
       }}
       className='gauge-chart'
     >
@@ -39,6 +41,7 @@ function GaugeChart({ aqiParams, aqiArr }) {
               </select>
             </div>
 
+            <h3 className='title'>AQI Meter</h3>
             <div className='year-selector'>
               <select
                 onChange={(e) => {
@@ -69,11 +72,17 @@ function GaugeChart({ aqiParams, aqiArr }) {
               ],
             ]}
             options={{
-              redFrom: 90,
-              redTo: 100,
-              yellowFrom: 75,
-              yellowTo: 90,
-              minorTicks: 5,
+              title: 'Air Quality Meter',
+              redFrom: 20,
+              redTo: 30,
+              yellowFrom: 10,
+              yellowTo: 20,
+              minorTicks: 10,
+              max: 30,
+              chartArea: {
+                width: '60%',
+                height: '60%',
+              },
             }}
             rootProps={{ 'data-testid': '1' }}
           />
