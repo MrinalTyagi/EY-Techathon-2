@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Chart } from 'react-google-charts';
+import '../../../App.css';
 
 function GaugeChart({ aqiParams, aqiArr }) {
   // const [selectedYear, setSelectedYear] = useState(2015);
@@ -15,6 +16,7 @@ function GaugeChart({ aqiParams, aqiArr }) {
         width: '100%',
         flexDirection: 'column',
       }}
+      className='gauge-chart'
     >
       {aqiArr.length !== 0 && (
         <>

@@ -15,13 +15,8 @@ function NavBar() {
         <Container>
           <div className='greenary-logo'></div>
           <Navbar.Brand href='#home' className='navbar-nav--brand'>
-            Navbar
+            GeoSis
           </Navbar.Brand>
-          {/* <Nav className='me-auto'>
-            <Nav.Link href='#home'>Home</Nav.Link>
-            <Nav.Link href='#features'>Features</Nav.Link>
-            <Nav.Link href='#pricing'>Pricing</Nav.Link>
-          </Nav> */}
 
           <div className='greenary-dropdown-menu'>
             <Navbar.Toggle aria-controls='navbar-dark-example' />

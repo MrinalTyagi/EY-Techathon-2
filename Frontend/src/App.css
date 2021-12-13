@@ -13,8 +13,8 @@ svg .state {
 }
 
 svg .state:hover {
-  stroke: black;
-  stroke-width: 1px;
+  stroke: rgba(64, 0, 128, 0.3137254901960784);
+  stroke-width: 2px;
   cursor: pointer;
 }
 
@@ -122,4 +122,9 @@ button {
 
 .global-card-styles {
   height: 100%;
+}
+
+.gauge-chart > div > div > table {
+  display: flex !important;
+  justify-content: center !important;
 }

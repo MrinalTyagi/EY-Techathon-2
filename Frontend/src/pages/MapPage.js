@@ -163,12 +163,12 @@ function MapPage() {
                   <h1>DASHBOARD</h1>
                 </div>
                 <div className='left-container__top--tags'>
-                  <h1>This is title</h1>
-                  <p>This is a paragraph</p>
+                  <h1>Predicted Forest Cover Area</h1>
+                  <p>by 2022</p>
                 </div>
                 <div className='left-container__top--stats'>
-                  <h1>This is title</h1>
-                  <p>This is a paragraph</p>
+                  <h1>Forest</h1>
+                  <p>Lungs of Earth</p>
                 </div>
                 <></>
               </Col>
