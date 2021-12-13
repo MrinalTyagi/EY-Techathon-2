@@ -56,5 +56,16 @@ def predict_total_forest():
         return jsonify(preds[0][0])
 
 
+@app.route("/all", methods=["GET"])
+def getAllData():
+    data = {}
+    for i in state_list:
+        data_fetch = list(dashboard.find({"Region" : i}, {'_id' : 0}))[0]
+        data[i] = data_fetch
+    return jsonify(data)
+
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
