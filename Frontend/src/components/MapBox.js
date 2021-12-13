@@ -2,7 +2,14 @@ import React, { useEffect, useState } from 'react';
 
 var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 
-function MapBox() {
+function MapBox({ area = 'india', url = 'aavaig2069.3d85qak1' }) {
+  const AreaToUrlMap = {
+    india: 'aavaig2069.3d85qak1',
+    'himachal pradesh': 'aavaig2069.cf5xtz0n',
+    gujarat: 'aavaig2069.32bs6f7z',
+    'tamil nadu': 'aavaig2069.8ty6aufg',
+  };
+
   const loadMap = () => {
     mapboxgl.accessToken =
       'pk.eyJ1IjoiYWF2YWlnMjA2OSIsImEiOiJja3gyNjhkdG0xOTljMnBueTluZnA0YzFzIn0.eZB9Au7ertDodRUyEVQHZQ';
@@ -17,7 +24,7 @@ function MapBox() {
 
     map.on('load', () => {
       const layers = map.getStyle().layers;
-      // Find the index of the first symbol layer in the map style
+
       let firstSymbolId;
       for (const layer of layers) {
         if (layer === 'symbol') {
@@ -28,11 +35,7 @@ function MapBox() {
 
       map.addSource('drone', {
         type: 'raster',
-        // url: 'mapbox://aavaig2069.4p9dmkt8',
-        // url: 'mapbox://aavaig2069.1786uogx',
-        // url: 'mapbox://aavaig2069.570b2alb',
-        url: 'mapbox://aavaig2069.3d85qak1',
-        // url: 'mapbox://aavaig2069.bbyqr9xn',
+        url: `mapbox://${AreaToUrlMap[area]}`,
       });
 
       map.addLayer({
@@ -41,60 +44,6 @@ function MapBox() {
         source: 'drone',
       });
     });
-
-    // map.on('load', () => {
-    //   console.log('map loaded');
-    //   map.addSource('mapbox-terrain', {
-    //     type: 'vector',
-    //     // Use any Mapbox-hosted tileset using its tileset id.
-    //     // Learn more about where to find a tileset id:
-    //     // https://docs.mapbox.com/help/glossary/tileset-id/
-    //     url: 'mapbox://aavaig2069.4p9dmkt8',
-    //   });
-    //   map.addLayer({
-    //     source: 'mapbox-terrain',
-    //     'source-layer': 'contour',
-    //     layout: {
-    //       'line-join': 'round',
-    //       'line-cap': 'round',
-    //     },
-    //     paint: {
-    //       'line-color': '#ff69b4',
-    //       'line-width': 1,
-    //     },
-    //   });
-    // });
-
-    // mapboxgl.accessToken = 'pk.mapboxgl.accessToken = 'pk.eyJ1IjoiYWF2YWlnMjA2OSIsImEiOiJja3gyNjhkdG0xOTljMnBueTluZnA0YzFzIn0.eZB9Au7ertDodRUyEVQHZQ';
-    // const map = new mapboxgl.Map({
-    //   container: 'mapbox-map',
-    //   style: 'mapbox://styles/mapbox/satellite-v9',
-    //   center: [-88.13734351262877, 35.137451890638886],
-    //   zoom: 4,
-    // });
-
-    // map.on('load', () => {
-    //   const layers = map.getStyle().layers;
-    //   // Find the index of the first symbol layer in the map style
-    //   let firstSymbolId;
-    //   for (const layer of layers) {
-    //     if (layer === 'symbol') {
-    //       firstSymbolId = layer.id;
-    //       break;
-    //     }
-    //   }
-
-    //   map.addSource('drone', {
-    //     type: 'raster',
-    //     url: 'mapbox://aavaig2069.4p9dmkt8',
-    //   });
-
-    //   map.addLayer({
-    //     id: 'drone-layer',
-    //     type: 'raster',
-    //     source: 'drone',
-    //   });
-    // });
   };
 
   useEffect(() => {

@@ -54,12 +54,16 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   padding-top: 1rem;
+  height: '100%';
 }
 
 .left-container__top--tags,
 .left-container__top--stats,
-.left-container__heading {
+.left-container__heading,
+.prediction-input--year,
+.prediction-input--area {
   width: 90%;
   margin-bottom: 1.5rem;
 }
@@ -127,4 +131,46 @@ button {
 .gauge-chart > div > div > table {
   display: flex !important;
   justify-content: center !important;
+}
+
+.prediction-form {
+  display: flex;
+  flex-direction: column;
+  width: '100%';
+  align-items: center;
+}
+
+.prediction-input--year,
+.prediction-input--area {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+}
+
+.prediction-input--year label,
+.prediction-input--area label {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.prediction-input--year input,
+.prediction-input--area input {
+  padding: 0.5rem;
+  width: 100%;
+  font-size: 1.4rem;
+  border-radius: 4px;
+  border: 1px solid gray;
+  background-color: transparent;
+  color: black;
+}
+
+.prediction-input--submit {
+  width: 90%;
+}
+
+.prediction-input--submit button {
+  padding: 0.5rem;
+  width: 60%;
+  font-size: 1.4rem;
+  border-radius: 4px;
 }

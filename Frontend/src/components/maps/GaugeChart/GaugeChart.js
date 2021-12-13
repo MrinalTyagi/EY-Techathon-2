@@ -16,7 +16,7 @@ function GaugeChart({ aqiParams, aqiArr }) {
         width: '100%',
         flexDirection: 'column',
         overflow: 'hidden',
-        height: '100%',
+        // height: '100%',
       }}
       className='gauge-chart'
     >
@@ -60,8 +60,8 @@ function GaugeChart({ aqiParams, aqiArr }) {
           </div>
 
           <Chart
-            width={'100%'}
-            height={'100%'}
+            // width={'100%'}
+            // height={'100%'}
             chartType='Gauge'
             loader={<div>Loading Chart</div>}
             data={[

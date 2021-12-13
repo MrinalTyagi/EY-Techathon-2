@@ -27,6 +27,7 @@ import BarChart from '../components/maps/BarChart/BarChart';
 import LineChart3 from '../components/maps/LineChartJs/LineChart3';
 import IndiaVegetation from '../components/IndiaVegetation';
 import IndiaClimate from '../components/IndiaClimate';
+import CountUp from 'react-countup';
 
 // const token = `sk.eyJ1IjoiYWF2YWlnMjA2OSIsImEiOiJja3gyNmU5dWMwOGNwMm5xazJsbTJkdndsIn0.P8U1m-KogLxOchRCfvY60Q`;
 
@@ -44,8 +45,10 @@ function MapPage() {
   const [aqiArr, setAqiArr] = useState([]);
   const [comboChartData, setComboChartData] = useState([]);
 
-  const [inputYear, setInputYear] = useState('');
-  const [inputState, setInputState] = useState('');
+  const [inputYear, setInputYear] = useState(2022);
+  const [inputArea, setInputArea] = useState('India');
+  const [predictedResult, setPredictedResult] = useState(665688.922946932);
+
   const [view, setView] = useState('Normal View');
 
   const fetchData = async () => {
@@ -157,9 +160,9 @@ function MapPage() {
     const formData = new FormData();
 
     formData.append('year', inputYear);
-    formData.append('area', inputState);
+    formData.append('area', inputArea);
 
-    console.log(inputYear, inputState);
+    console.log(inputYear, inputArea);
 
     fetch('http://127.0.0.1:5000/predict/TFA', {
       method: 'POST',
@@ -169,11 +172,14 @@ function MapPage() {
         // Accept: 'application/json',
         // 'Content-Type': 'application/json',
       },
-      // body: JSON.stringify({ year: inputYear, area: inputState }),
+      // body: JSON.stringify({ year: inputYear, area: inputArea }),
       body: formData,
     })
       .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((data) => {
+        console.log(data['Result']);
+        setPredictedResult(data['Result']);
+      });
   };
 
   useEffect(() => {
@@ -186,23 +192,56 @@ function MapPage() {
         <Row style={{ height: '100%' }} className='map-page-row'>
           {/* col-left */}
           <Col style={{ height: '100%' }}>
-            <Row style={{ height: '100%' }}>
+            <Row>
               <Col style={{ height: '100%' }} className='left-container'>
-                <div
-                  className='left-container__heading'
-                  onClick={(e) => console.log('Clicked')}
-                >
-                  <h1>DASHBOARD</h1>
+                <div className='left-container__heading'>
+                  <h1>
+                    <CountUp end={predictedResult} duration={5} delay={8} />
+                    sq. km.
+                  </h1>
                 </div>
                 <div className='left-container__top--tags'>
-                  <h1>Predicted Forest Cover Area</h1>
-                  <p>by 2022</p>
+                  <h1>Predicted Forest Cover Area of {inputArea}</h1>
+                  <p>by {inputYear}</p>
                 </div>
                 <div className='left-container__top--stats'>
                   <h1>Forest</h1>
                   <p>Lungs of Earth</p>
                 </div>
                 <></>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <div className='prediction-form'>
+                  <div className='prediction-input--year'>
+                    <label for='input-year'>Year</label>
+                    <input
+                      type='text'
+                      value={inputYear}
+                      onChange={(e) => setInputYear(e.target.value)}
+                      id='input-year'
+                      placeholder='Enter year ...'
+                    />
+                  </div>
+
+                  <div className='prediction-input--area'>
+                    <label for='input-area'>Area</label>
+                    <input
+                      type='text'
+                      value={inputArea}
+                      onChange={(e) => setInputArea(e.target.value)}
+                      id='input-area'
+                      placeholder='Enter area ...'
+                    />
+                  </div>
+
+                  <div className='prediction-input--submit'>
+                    <button type='submit' onClick={onSubmitPostRequest}>
+                      Go{' '}
+                    </button>
+                  </div>
+                </div>
               </Col>
             </Row>
           </Col>
@@ -390,36 +429,45 @@ function MapPage() {
             </Card>
           </Col>
 
-          <Col className='container-card'>
+          {/* <Col className='container-card'>
             <Card
               bg='light'
-              style={{ width: '90%' }}
+              style={{ width: '90%', height: '100%' }}
               className='mb-2 right-container__bottom box-shadow-main global-card-styles'
               // border='light'
             >
-              <Card.Body>
-                <div className=''>
-                  <input
-                    type='text'
-                    value={inputYear}
-                    onChange={(e) => setInputYear(e.target.value)}
-                  />
+              <Card.Body style={{ height: '100%' }}> */}
+          {/* <div className='prediction-title'>
+                  <h3>Enter Values To Predict</h3>
+                </div> */}
+          {/* <div className='prediction-input--year'>
+                 
                 </div>
-                <div className=''>
-                  <input
-                    type='text'
-                    value={inputState}
-                    onChange={(e) => setInputState(e.target.value)}
-                  />
+                <div className='prediction-input--area'>
+                 
                 </div>
-                <div className=''>
-                  <button type='submit' onClick={onSubmitPostRequest}>
-                    Go{' '}
-                  </button>
-                </div>
-              </Card.Body>
+                <div className='prediction-submit'>
+                  
+                </div> */}
+          {/* <input
+                  type='text'
+                  value={inputYear}
+                  onChange={(e) => setInputYear(e.target.value)}
+                  id='input-year'
+                />
+                <input
+                  type='text'
+                  value={inputArea}
+                  onChange={(e) => setInputArea(e.target.value)}
+                  id='input-area'
+                />
+                <button type='submit' onClick={onSubmitPostRequest}>
+                  Go{' '}
+                </button> */}
+          {/* <div className='prediction-result'>{predictedResult}</div> */}
+          {/* </Card.Body>
             </Card>
-          </Col>
+          </Col> */}
         </Row>
         <Row className='map-page-row'>
           <Table striped bordered hover>

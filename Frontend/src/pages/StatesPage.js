@@ -25,6 +25,9 @@ import LineChart2 from '../components/maps/LineChartJs/LineChart2';
 import BarChart from '../components/maps/BarChart/BarChart';
 import LineChart3 from '../components/maps/LineChartJs/LineChart3';
 import { useParams } from 'react-router-dom';
+import IndiaVegetation from '../components/IndiaVegetation';
+import IndiaClimate from '../components/IndiaClimate';
+import CountUp from 'react-countup';
 
 function StatesPage() {
   const [normalSelected, setNormalSelected] = useState(true);
@@ -40,6 +43,11 @@ function StatesPage() {
   const [aqiArr, setAqiArr] = useState([]);
   const [comboChartData, setComboChartData] = useState([]);
   const params = useParams();
+  const [inputYear, setInputYear] = useState(2022);
+  const [inputArea, setInputArea] = useState('India');
+  const [predictedResult, setPredictedResult] = useState(665688.922946932);
+
+  const [view, setView] = useState('Normal View');
 
   const fetchData = async () => {
     const response = await fetch(`http://127.0.0.1:5000/${params.state}`, {
@@ -143,6 +151,34 @@ function StatesPage() {
     // console.log(aqiVal[1][1]);
   };
 
+  const onSubmitPostRequest = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append('year', inputYear);
+    formData.append('area', inputArea);
+
+    console.log(inputYear, inputArea);
+
+    fetch('http://127.0.0.1:5000/predict/TFA', {
+      method: 'POST',
+      // mode: 'no-cors',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        // Accept: 'application/json',
+        // 'Content-Type': 'application/json',
+      },
+      // body: JSON.stringify({ year: inputYear, area: inputArea }),
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data['Result']);
+        setPredictedResult(data['Result']);
+      });
+  };
+
   useEffect(() => {
     fetchData();
   }, [dataApi.length]);
@@ -153,23 +189,56 @@ function StatesPage() {
         <Row style={{ height: '100%' }} className='map-page-row'>
           {/* col-left */}
           <Col style={{ height: '100%' }}>
-            <Row style={{ height: '100%' }}>
+            <Row>
               <Col style={{ height: '100%' }} className='left-container'>
-                <div
-                  className='left-container__heading'
-                  onClick={(e) => console.log('Clicked')}
-                >
-                  <h1>DASHBOARD</h1>
+                <div className='left-container__heading'>
+                  <h1>
+                    <useCountUp end={predictedResult} duration={5} delay={8} />
+                    sq. km.
+                  </h1>
                 </div>
                 <div className='left-container__top--tags'>
-                  <h1>This is title</h1>
-                  <p>This is a paragraph</p>
+                  <h1>Predicted Forest Cover Area of {inputArea}</h1>
+                  <p>by {inputYear}</p>
                 </div>
                 <div className='left-container__top--stats'>
-                  <h1>This is title</h1>
-                  <p>This is a paragraph</p>
+                  <h1>Forest</h1>
+                  <p>Lungs of Earth</p>
                 </div>
                 <></>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <div className='prediction-form'>
+                  <div className='prediction-input--year'>
+                    <label for='input-year'>Year</label>
+                    <input
+                      type='text'
+                      value={inputYear}
+                      onChange={(e) => setInputYear(e.target.value)}
+                      id='input-year'
+                      placeholder='Enter year ...'
+                    />
+                  </div>
+
+                  <div className='prediction-input--area'>
+                    <label for='input-area'>Area</label>
+                    <input
+                      type='text'
+                      value={inputArea}
+                      onChange={(e) => setInputArea(e.target.value)}
+                      id='input-area'
+                      placeholder='Enter area ...'
+                    />
+                  </div>
+
+                  <div className='prediction-input--submit'>
+                    <button type='submit' onClick={onSubmitPostRequest}>
+                      Go{' '}
+                    </button>
+                  </div>
+                </div>
               </Col>
             </Row>
           </Col>
@@ -186,28 +255,66 @@ function StatesPage() {
             }}
           >
             <div className='map-toggle-buttons'>
-              <Button
-                variant='primary'
-                onClick={() => setNormalSelected(true)}
-                // onClick={(e) => console.log('Clicked')}
+              {/* <Button
+              variant='primary'
+              onClick={() => setNormalSelected(true)}
+              // onClick={(e) => console.log('Clicked')}
+            >
+              Normal View
+            </Button>
+            <Button
+              variant='secondary'
+              onClick={(e) => setNormalSelected(false)}
+            >
+              Satellite View
+            </Button> */}
+              {/* <Button
+              variant='primary'
+              onClick={() => setNormalSelected(true)}
+              // onClick={(e) => console.log('Clicked')}
+            >
+              Normal View
+            </Button>
+            <Button
+              variant='secondary'
+              onClick={(e) => setNormalSelected(false)}
+            >
+              Satellite View
+            </Button> */}
+              <select
+                value={view}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  setView(e.target.value);
+                }}
               >
-                Normal View
-              </Button>
-              <Button
-                variant='secondary'
-                onClick={(e) => setNormalSelected(false)}
-              >
-                Satellite View
-              </Button>
+                <option value='Normal View'>Normal View</option>
+                <option value='Satellite View'>Satellite View</option>
+                <option value='Vegetation Timelapse'>
+                  Vegetation Timelapse
+                </option>
+                <option value='Climate Timelapse'>Climate Timelapse</option>
+              </select>
             </div>
             <></>
-            {normalSelected ? (
+            {view === 'Normal View' && (
               <>
                 <GeoChart data={data} />
               </>
-            ) : (
+            )}
+            {view === 'Satellite View' && (
               <>
-                <MapBox />
+                <MapBox area={params.state.toLowerCase()} />
+              </>
+            )}
+            {view === 'Vegetation Timelapse' && (
+              <>
+                <IndiaVegetation />
+              </>
+            )}
+            {view === 'Climate Timelapse' && (
+              <>
+                <IndiaClimate />
               </>
             )}
           </Col>
@@ -263,7 +370,7 @@ function StatesPage() {
                   <Card.Body>
                     <ComboChart comboChartData={comboChartData} />
 
-                    <Card.Title>Total Count </Card.Title>
+                    <Card.Title></Card.Title>
                   </Card.Body>
                 </Card>
               </Col>
@@ -283,7 +390,7 @@ function StatesPage() {
               <Card.Body>
                 <GaugeChart aqiParams={aqiParams} aqiArr={aqiArr} />
 
-                <Card.Title>Total Count </Card.Title>
+                <Card.Title></Card.Title>
               </Card.Body>
             </Card>
           </Col>
@@ -300,7 +407,7 @@ function StatesPage() {
                   forestDataObject={forestData}
                 />
 
-                <Card.Title>Total Count </Card.Title>
+                <Card.Title></Card.Title>
               </Card.Body>
             </Card>
           </Col>
@@ -314,10 +421,50 @@ function StatesPage() {
               <Card.Body>
                 <LineChart2 rainfall={rainfall} />
 
-                <Card.Title>Total Count </Card.Title>
+                <Card.Title></Card.Title>
               </Card.Body>
             </Card>
           </Col>
+
+          {/* <Col className='container-card'>
+          <Card
+            bg='light'
+            style={{ width: '90%', height: '100%' }}
+            className='mb-2 right-container__bottom box-shadow-main global-card-styles'
+            // border='light'
+          >
+            <Card.Body style={{ height: '100%' }}> */}
+          {/* <div className='prediction-title'>
+                <h3>Enter Values To Predict</h3>
+              </div> */}
+          {/* <div className='prediction-input--year'>
+               
+              </div>
+              <div className='prediction-input--area'>
+               
+              </div>
+              <div className='prediction-submit'>
+                
+              </div> */}
+          {/* <input
+                type='text'
+                value={inputYear}
+                onChange={(e) => setInputYear(e.target.value)}
+                id='input-year'
+              />
+              <input
+                type='text'
+                value={inputArea}
+                onChange={(e) => setInputArea(e.target.value)}
+                id='input-area'
+              />
+              <button type='submit' onClick={onSubmitPostRequest}>
+                Go{' '}
+              </button> */}
+          {/* <div className='prediction-result'>{predictedResult}</div> */}
+          {/* </Card.Body>
+          </Card>
+        </Col> */}
         </Row>
         <Row className='map-page-row'>
           <Table striped bordered hover>

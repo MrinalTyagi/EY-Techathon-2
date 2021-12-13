@@ -6,8 +6,8 @@ function LineChart2({ rainfall }) {
     <div>
       {rainfall.length !== 0 && (
         <Chart
-          width={'100%'}
-          height={'100%'}
+          // width={'100%'}
+          // height={'100%'}
           chartType='LineChart'
           loader={<div>Loading Chart</div>}
           data={[['Year', 'Annual Rainfall'], ...rainfall]}
