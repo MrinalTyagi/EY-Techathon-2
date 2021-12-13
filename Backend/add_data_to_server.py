@@ -13,7 +13,7 @@ dataset = dataset.fillna(0)
 
 states = dataset["State/UT"].unique()
 
-col = [' Geographical Area', 'Total Forest Cover Area',
+col = ['Geographical Area', 'Total Forest Cover Area',
        'Very Dense', 'Moderately Dense', 'Open Forest', ' Scrub Land',
        'Mangrove', 'SO2', 'NO2', 'RSPM', 'SPM', 'PM25','	Annual Rainfall']
 
@@ -24,12 +24,12 @@ for i in states:
   ds_df = dataset[dataset["State/UT"] == i].sort_values('Year')
   year = {}
   for j in ds:
-    normal_rainfall = (float(j[2]) * float(j[14])) / (max(dataset['Annual Rainfall']) - min(dataset['Annual Rainfall']))
-    normal_no2 = (float(j[2]) * float(j[10])) / (max(dataset['NO2']) - min(dataset['NO2']))
-    normal_pm25 = (float(j[2]) * float(j[13])) / (max(dataset['PM25']) - min(dataset['PM25']))
-    normal_rspm = (float(j[2]) * float(j[11])) / (max(dataset['RSPM']) - min(dataset['RSPM']))
-    normal_so2 = (float(j[2]) * float(j[9])) / (max(dataset['SO2']) - min(dataset['SO2']))
-    normal_spm = (float(j[2]) * float(j[12])) / (max(dataset['SPM']) - min(dataset['SPM']))
+    normal_rainfall = (float(j[3]) * float(j[14])) / max(dataset['Annual Rainfall'])
+    normal_no2 = (float(j[3]) * float(j[10])) / max(dataset['NO2']) 
+    normal_pm25 = (float(j[3]) * float(j[13])) / max(dataset['PM25']) 
+    normal_rspm = (float(j[3]) * float(j[11])) / max(dataset['RSPM']) 
+    normal_so2 = (float(j[3]) * float(j[9])) / max(dataset['SO2'])
+    normal_spm = (float(j[3]) * float(j[12])) / max(dataset['SPM']) 
     values = {
         'Geographical Area' : float(j[2]),
         'Total Forest Cover Area' : float(j[3]),
