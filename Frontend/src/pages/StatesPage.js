@@ -28,6 +28,7 @@ import { useParams } from 'react-router-dom';
 
 function StatesPage() {
   const [normalSelected, setNormalSelected] = useState(true);
+
   const [indiaData, setIndiaData] = useState([]);
   const [dataApi, setDataApi] = useState([]);
   const [years, setYears] = useState([]);
@@ -36,6 +37,7 @@ function StatesPage() {
   const [forestDataArray, setForestDataArray] = useState([]);
   const [rainfall, setRainfall] = useState([]);
   const [aqiParams, setAqiParams] = useState([]);
+  const [aqiArr, setAqiArr] = useState([]);
   const [comboChartData, setComboChartData] = useState([]);
   const params = useParams();
 
@@ -46,7 +48,6 @@ function StatesPage() {
         'Content-Type': 'application/json',
       },
     });
-
     const data = await response.json();
 
     console.log(data.Data);
@@ -105,7 +106,25 @@ function StatesPage() {
       SPM: data.Data['2015']['SPM'],
       PM25: data.Data['2015']['PM25'],
     };
+
+    const aqiValArr = Object.keys(data.Data).map((year) => {
+      return {
+        year: year,
+        SO2: data.Data[year]['SO2'],
+        NO2: data.Data[year]['NO2'],
+        RSPM: data.Data[year]['RSPM'],
+        SPM: data.Data[year]['SPM'],
+        PM25: data.Data[year]['PM25'],
+      };
+    });
+
     setAqiParams(aqiVal);
+
+    // aqiValArr.forEach((val, idx) => console.log(aqiValArr[idx].year));
+
+    console.log(aqiValArr);
+
+    setAqiArr(aqiValArr);
 
     const comboData = Object.keys(data.Data).map((year) => [
       year,
@@ -114,7 +133,7 @@ function StatesPage() {
       data.Data[year]['N_SPM'],
     ]);
 
-    console.log(comboData);
+    // console.log(comboData);
     setComboChartData(comboData);
 
     // const aqiVal =
@@ -262,7 +281,7 @@ function StatesPage() {
               // border='light'
             >
               <Card.Body>
-                <GaugeChart aqiParams={aqiParams} />
+                <GaugeChart aqiParams={aqiParams} aqiArr={aqiArr} />
 
                 <Card.Title>Total Count </Card.Title>
               </Card.Body>

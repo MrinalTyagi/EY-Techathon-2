@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { select, geoPath, geoMercator, min, max, scaleLinear } from 'd3';
 import useResizeObserver from '../hooks/useResizeObserver';
 import { Button, ButtonGroup } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 function GeoChart({ data, property }) {
   const svgRef = useRef();
@@ -9,6 +10,7 @@ function GeoChart({ data, property }) {
   const dimensions = useResizeObserver(wrapperRef);
 
   const [selectedState, setSelectedState] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const svg = select(svgRef.current);
@@ -27,8 +29,9 @@ function GeoChart({ data, property }) {
       .data(data.features)
       .join('path')
       .on('click', (event, feature) => {
-        console.log(feature);
-        setSelectedState(selectedState === feature ? null : feature);
+        console.log(feature.properties['NAME_1']);
+        // setSelectedState(selectedState === feature ? null : feature);
+        navigate(`/${feature.properties['NAME_1']}`);
       })
       .attr('class', 'state')
       .attr('fill', '#eee')

@@ -121,7 +121,9 @@ function MapPage() {
 
     setAqiParams(aqiVal);
 
-    aqiValArr.forEach((val, idx) => console.log(aqiValArr[idx].year));
+    // aqiValArr.forEach((val, idx) => console.log(aqiValArr[idx].year));
+
+    console.log(aqiValArr);
 
     setAqiArr(aqiValArr);
 

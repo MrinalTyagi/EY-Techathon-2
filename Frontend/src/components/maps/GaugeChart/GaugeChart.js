@@ -18,7 +18,10 @@ function GaugeChart({ aqiParams, aqiArr }) {
     >
       {aqiArr.length !== 0 && (
         <>
-          <div className='aqi-param-selector'>
+          <div
+            className='aqi-param-selector'
+            style={{ display: 'flex', justifyContent: 'space-between' }}
+          >
             <div className='param-selector'>
               <select
                 value={selectedAqiParam}
