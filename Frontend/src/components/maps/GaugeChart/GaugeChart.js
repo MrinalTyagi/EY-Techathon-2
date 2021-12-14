@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Spinner } from 'react-bootstrap';
 import { Chart } from 'react-google-charts';
 import '../../../App.css';
 
@@ -63,7 +64,21 @@ function GaugeChart({ aqiParams, aqiArr }) {
             // width={'100%'}
             // height={'100%'}
             chartType='Gauge'
-            loader={<div>Loading Chart</div>}
+            loader={
+              <>
+                <div
+                  className='spinner'
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                  }}
+                >
+                  <Spinner animation='border' variant='primary' />
+                </div>
+              </>
+            }
             data={[
               ['AQI Param', '%Value'],
               [

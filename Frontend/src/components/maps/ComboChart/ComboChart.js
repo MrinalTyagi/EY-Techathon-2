@@ -1,5 +1,6 @@
 import { Chart } from 'react-google-charts';
 import React from 'react';
+import { Spinner } from 'react-bootstrap';
 
 function ComboChart({ comboChartData }) {
   return (
@@ -9,7 +10,21 @@ function ComboChart({ comboChartData }) {
           width={'100%'}
           height={'100%'}
           chartType='ComboChart'
-          loader={<div>Loading Chart</div>}
+          loader={
+            <>
+              <div
+                className='spinner'
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                }}
+              >
+                <Spinner animation='border' variant='primary' />
+              </div>
+            </>
+          }
           data={[['Year', 'TFC', 'AR', 'SPM'], ...comboChartData]}
           options={{
             title: 'Relation b/w TFC, AR, SPM',

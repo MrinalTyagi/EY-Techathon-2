@@ -16,15 +16,10 @@ function NavBar() {
         sticky='top'
       >
         <Container>
-          <div className='greenary-logo'></div>
-          <Navbar.Brand
-            className='navbar-nav--brand'
-            onClick={() => navigate(`/`)}
-          >
+          <div className='greenary-logo' onClick={() => navigate(`/`)}>
             GeoSis
-          </Navbar.Brand>
-
-          <div className='greenary-dropdown-menu'>
+          </div>
+          {/* <div className='greenary-dropdown-menu'>
             <Navbar.Toggle aria-controls='navbar-dark-example' />
             <Navbar.Collapse
               id='navbar-dark-example'
@@ -52,7 +47,7 @@ function NavBar() {
                 </NavDropdown>
               </Nav>
             </Navbar.Collapse>
-          </div>
+          </div> */}
         </Container>
       </Navbar>
     </>

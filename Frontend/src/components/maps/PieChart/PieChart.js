@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Spinner } from 'react-bootstrap';
 import Chart from 'react-google-charts';
 
 function PieChart({ forestDataObject }) {
@@ -28,7 +29,21 @@ function PieChart({ forestDataObject }) {
             // width={'100%'}
             // height={'100%'}
             chartType='PieChart'
-            loader={<div>Loading Chart</div>}
+            loader={
+              <>
+                <div
+                  className='spinner'
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                  }}
+                >
+                  <Spinner animation='border' variant='primary' />
+                </div>
+              </>
+            }
             data={[
               ['Forest Cover', '%Cover'],
               ['VDC', calculate(forestDataObject[selectedIndex]['VDC'])],

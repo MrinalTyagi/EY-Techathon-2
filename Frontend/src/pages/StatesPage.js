@@ -404,7 +404,25 @@ function StatesPage() {
                   // border='light'
                 >
                   <Card.Body>
-                    <ComboChart comboChartData={comboChartData} />
+                    {dataApi.length === 0 ? (
+                      <>
+                        <div
+                          className='spinner'
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: '100%',
+                          }}
+                        >
+                          <Spinner animation='border' variant='primary' />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <ComboChart comboChartData={comboChartData} />
+                      </>
+                    )}
 
                     <Card.Title></Card.Title>
                   </Card.Body>
@@ -424,7 +442,25 @@ function StatesPage() {
               // border='light'
             >
               <Card.Body>
-                <GaugeChart aqiParams={aqiParams} aqiArr={aqiArr} />
+                {dataApi.length === 0 ? (
+                  <>
+                    <div
+                      className='spinner'
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '100%',
+                      }}
+                    >
+                      <Spinner animation='border' variant='primary' />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <GaugeChart aqiParams={aqiParams} aqiArr={aqiArr} />
+                  </>
+                )}
 
                 <Card.Title></Card.Title>
               </Card.Body>
@@ -438,10 +474,28 @@ function StatesPage() {
               // border='light'
             >
               <Card.Body>
-                <PieChart
-                  // forestData={forestDataArray}
-                  forestDataObject={forestData}
-                />
+                {dataApi.length === 0 ? (
+                  <>
+                    <div
+                      className='spinner'
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '100%',
+                      }}
+                    >
+                      <Spinner animation='border' variant='primary' />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <PieChart
+                      // forestData={forestDataArray}
+                      forestDataObject={forestData}
+                    />
+                  </>
+                )}
 
                 <Card.Title></Card.Title>
               </Card.Body>
@@ -455,7 +509,25 @@ function StatesPage() {
               // border='light'
             >
               <Card.Body>
-                <LineChart2 rainfall={rainfall} />
+                {dataApi.length === 0 ? (
+                  <>
+                    <div
+                      className='spinner'
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '100%',
+                      }}
+                    >
+                      <Spinner animation='border' variant='primary' />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <LineChart2 rainfall={rainfall} />
+                  </>
+                )}
 
                 <Card.Title></Card.Title>
               </Card.Body>
@@ -502,7 +574,7 @@ function StatesPage() {
           </Card>
         </Col> */}
         </Row>
-        <Row className='map-page-row'>
+        {/* <Row className='map-page-row'>
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -532,7 +604,7 @@ function StatesPage() {
               </tr>
             </tbody>
           </Table>
-        </Row>
+        </Row> */}
       </Container>
     </React.Fragment>
   );
