@@ -29,6 +29,13 @@ import IndiaVegetation from '../components/IndiaVegetation';
 import IndiaClimate from '../components/IndiaClimate';
 import CountUp from 'react-countup';
 
+import GujaratClimate from '../components/gifMaps/GujaratClimate';
+import GujaratVegetation from '../components/gifMaps/GujaratVegetation';
+import TamilNaduVegetation from '../components/gifMaps/TamilNaduVegetation';
+import HimachalPradeshClimate from '../components/gifMaps/HimachalPradeshClimate';
+import TamilNaduClimate from '../components/gifMaps/TamilNaduClimate';
+import HimachalPradeshVegetation from '../components/gifMaps/HimachalPradeshVegetation';
+
 function StatesPage() {
   const params = useParams();
 
@@ -51,6 +58,18 @@ function StatesPage() {
   const [predictedResult, setPredictedResult] = useState(665688.922946932);
 
   const [view, setView] = useState('Normal View');
+
+  const ComponentVegetation = `${params.state
+    .toLowerCase()
+    .split(' ')
+    .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+    .join('')}Vegetation`;
+
+  const ComponentClimate = `${params.state
+    .toLowerCase()
+    .split(' ')
+    .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+    .join('')}Climate`;
 
   const fetchData = async () => {
     const response = await fetch(`http://127.0.0.1:5000/${params.state}`, {
@@ -312,14 +331,26 @@ function StatesPage() {
             )}
             {view === 'Vegetation Timelapse' && (
               <>
-                <IndiaVegetation
-                  area={params.state.toLowerCase().replace(' ', '')}
-                />
+                {params.state.toLowerCase() === 'gujarat' && (
+                  <GujaratVegetation />
+                )}
+                {params.state.toLowerCase() === 'himachal pradhesh' && (
+                  <HimachalPradeshVegetation />
+                )}
+                {params.state.toLowerCase() === 'tamil nadu' && (
+                  <TamilNaduVegetation />
+                )}
               </>
             )}
             {view === 'Climate Timelapse' && (
               <>
-                <IndiaClimate />
+                {params.state.toLowerCase() === 'gujarat' && <GujaratClimate />}
+                {params.state.toLowerCase() === 'himachal pradhesh' && (
+                  <HimachalPradeshClimate />
+                )}
+                {params.state.toLowerCase() === 'tamil nadu' && (
+                  <TamilNaduClimate />
+                )}
               </>
             )}
           </Col>
