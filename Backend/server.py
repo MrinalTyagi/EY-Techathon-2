@@ -1,10 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, json, request, jsonify
 import numpy as np
 import pandas as pd
 from flask_cors import CORS
 from pymongo import MongoClient
 import pickle
 from sklearn.linear_model import LinearRegression
+from sklearn.cluster import KMeans
 
 client = MongoClient("mongodb://localhost:27017")
 db = client.ey
@@ -13,6 +14,26 @@ dataset = pd.read_csv("Backend/Final_dataset.csv")
 state_list = dataset["State/UT"].values
 states = [i.lower() for i in state_list]
 app = Flask(__name__)
+
+clusters = {
+    1987: 6,
+    1989: 6,
+    1991: 6,
+    1993: 6,
+    1995: 6,
+    1997: 6,
+    1999: 6,
+    2001: 8,
+    2003: 5,
+    2005: 6,
+    2007: 6,
+    2009: 7,
+    2011: 4,
+    2013: 6,
+    2015: 4,
+    2017: 5,
+    2019: 5
+}
 
 CORS(app)
 
@@ -64,6 +85,16 @@ def getAllData():
         data[i] = data_fetch
     return jsonify(data)
 
+
+@app.route("/cluster", methods=["POST"])
+def cluster():
+    year = request.form.get('year')
+    ds = dataset[dataset["Year"] == int(year)]
+    kmeans = KMeans(n_clusters=clusters[int(year)], init="k-means++", random_state=42)
+    kmeans.fit(ds.iloc[:, 1:].values)
+    res = kmeans.predict(ds.iloc[:, 1:].values)
+    final = {x[0] : x[1] for x in zip(ds["State"].values, res)}
+    return jsonify(final)
 
 
 
