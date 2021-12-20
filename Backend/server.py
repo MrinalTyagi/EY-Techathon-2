@@ -6,6 +6,10 @@ from pymongo import MongoClient
 import pickle
 from sklearn.linear_model import LinearRegression
 from sklearn.cluster import KMeans
+import requests
+from requests.structures import CaseInsensitiveDict
+token = "AAAAAAAAAAAAAAAAAAAAAKi7WwEAAAAAJluNwwCTUYfqBY2t68om7gTYFeE%3D62xRr0Ay47fjpAxtEyDdzQIDomu1qzz4vwecSXl8g6EReT0e3R"
+
 
 client = MongoClient("mongodb://localhost:27017")
 db = client.ey
@@ -62,8 +66,6 @@ def get_state_data(variable):
 def predict_total_forest():
     year = request.form.get('year')
     state = request.form.get('area')
-    # year = 88752.0
-    # state = "west bengal"
     if(state.lower() in states):
         for i in range(len(states)):
             if(state.lower() == states[i]):
@@ -96,6 +98,14 @@ def cluster():
     final = {x[0] : x[1] for x in zip(ds["State"].values, res)}
     return jsonify(final)
 
+@app.route("/getTweets", methods=["GET"])
+def getTweetData():
+    url = "https://api.twitter.com/2/tweets/search/recent?query=forest"
+    headers = CaseInsensitiveDict()
+    headers["Accept"] = "application/json"
+    headers["Authorization"] = f"Bearer {token}"
+    resp = requests.get(url, headers=headers)
+    return jsonify(resp.content)
 
 
 if __name__ == "__main__":
