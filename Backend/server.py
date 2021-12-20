@@ -105,7 +105,8 @@ def getTweetData():
     headers["Accept"] = "application/json"
     headers["Authorization"] = f"Bearer {token}"
     resp = requests.get(url, headers=headers)
-    return jsonify(resp.content)
+    print(resp.content)
+    return resp.content
 
 
 if __name__ == "__main__":
