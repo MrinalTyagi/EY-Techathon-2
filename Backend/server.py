@@ -8,6 +8,13 @@ from sklearn.linear_model import LinearRegression
 from sklearn.cluster import KMeans
 import requests
 from requests.structures import CaseInsensitiveDict
+from scipy.special import softmax
+import tensorflow as tf
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import transformers
+import string
+import re
+import ast
 token = "AAAAAAAAAAAAAAAAAAAAAKi7WwEAAAAAJluNwwCTUYfqBY2t68om7gTYFeE%3D62xRr0Ay47fjpAxtEyDdzQIDomu1qzz4vwecSXl8g6EReT0e3R"
 
 
@@ -18,6 +25,8 @@ dataset = pd.read_csv("Backend/Final_dataset.csv")
 state_list = dataset["State/UT"].values
 states = [i.lower() for i in state_list]
 app = Flask(__name__)
+tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
+model = AutoModelForSequenceClassification.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
 
 clusters = {
     1987: 6,
@@ -105,8 +114,71 @@ def getTweetData():
     headers["Accept"] = "application/json"
     headers["Authorization"] = f"Bearer {token}"
     resp = requests.get(url, headers=headers)
-    print(resp.content)
-    return resp.content
+    return jsonify(resp.content)
+
+
+def strip_links(text):
+    link_regex    = re.compile('((https?):((//)|(\\\\))+([\w\d:#@%/;$()~_?\+-=\\\.&](#!)?)*)', re.DOTALL)
+    links         = re.findall(link_regex, text)
+    for link in links:
+        text = text.replace(link[0], ', ')    
+    return text
+
+def strip_all_entities(text):
+    entity_prefixes = ['@','#']
+    for separator in  string.punctuation:
+        if separator not in entity_prefixes :
+            text = text.replace(separator,' ')
+    words = []
+    for word in text.split():
+        word = word.strip()
+        if word:
+            if word[0] not in entity_prefixes:
+                words.append(word)
+    return ' '.join(words)
+def clean(x):
+  if(x.find("RT") == 0 and x.find(":") != -1):
+      ind = x.find(":")
+      final = x[ind + 1:]
+      return strip_all_entities(strip_links(final))
+  else:
+      return strip_all_entities(strip_links(x))
+
+@app.route("rating", methods=["GET"])
+def getRating():
+    url = "https://api.twitter.com/2/tweets/search/recent?query=forest"
+    headers = CaseInsensitiveDict()
+    headers["Accept"] = "application/json"
+    headers["Authorization"] = f"Bearer {token}"
+    resp = requests.get(url, headers=headers)
+    a = ast.literal_eval(resp.content.decode("utf-8"))
+    a = a["data"]
+    tweets = []
+    for i in a:
+        tweets.append(i["text"])
+    for i in range(len(tweets)):
+        tweets[i] = clean(tweets[i])
+    f = []
+    for i in tweets:
+        if(i == " " or i == ""):
+            continue
+        f.append(i)
+    df = pd.DataFrame(f, columns=["text"])
+    res = {}
+    for i in df.text.values:
+        encoded_input = tokenizer(i, return_tensors='pt')
+        output = model(**encoded_input)
+        scores = output[0][0].detach().numpy()
+        scores = softmax(scores)
+        scores = np.argmax(scores, axis = -1)
+        if(scores == 0):
+            res[str(i)] = "Positive"
+        elif scores == 1:
+            res[str(i)] = "Neutral"
+        else:
+            res[str(i)] = "Negative"
+    return jsonify(res)
+    
 
 
 if __name__ == "__main__":
