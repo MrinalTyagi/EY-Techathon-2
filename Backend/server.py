@@ -8,6 +8,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.cluster import KMeans
 import requests
 from requests.structures import CaseInsensitiveDict
+import ast
 token = "AAAAAAAAAAAAAAAAAAAAAKi7WwEAAAAAJluNwwCTUYfqBY2t68om7gTYFeE%3D62xRr0Ay47fjpAxtEyDdzQIDomu1qzz4vwecSXl8g6EReT0e3R"
 
 
@@ -95,7 +96,7 @@ def cluster():
     kmeans = KMeans(n_clusters=clusters[int(year)], init="k-means++", random_state=42)
     kmeans.fit(ds.iloc[:, 1:].values)
     res = kmeans.predict(ds.iloc[:, 1:].values)
-    final = {x[0] : str(x[1]) for x in zip(ds["State/UT"].values, res)}
+    final = {x[0] : x[1] for x in zip(ds["State"].values, res)}
     return jsonify(final)
 
 @app.route("/getTweets", methods=["GET"])
@@ -105,7 +106,7 @@ def getTweetData():
     headers["Accept"] = "application/json"
     headers["Authorization"] = f"Bearer {token}"
     resp = requests.get(url, headers=headers)
-    return jsonify(resp.content)
+    return jsonify(ast.literal_eval(resp.content.decode('utf-8')))
 
 
 if __name__ == "__main__":
