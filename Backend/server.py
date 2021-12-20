@@ -95,7 +95,7 @@ def cluster():
     kmeans = KMeans(n_clusters=clusters[int(year)], init="k-means++", random_state=42)
     kmeans.fit(ds.iloc[:, 1:].values)
     res = kmeans.predict(ds.iloc[:, 1:].values)
-    final = {x[0] : x[1] for x in zip(ds["State"].values, res)}
+    final = {x[0] : str(x[1]) for x in zip(ds["State/UT"].values, res)}
     return jsonify(final)
 
 @app.route("/getTweets", methods=["GET"])
