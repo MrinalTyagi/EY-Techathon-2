@@ -174,7 +174,7 @@ def getRating():
         if(scores == 0):
             res[str(i)] = "Positive"
         elif scores == 1:
-            res[str(i)] = "Neutral"
+            res[str(i)] = "Positive"
         else:
             res[str(i)] = "Negative"
     return jsonify(res)
