@@ -9,7 +9,7 @@ from sklearn.cluster import KMeans
 import requests
 from requests.structures import CaseInsensitiveDict
 from scipy.special import softmax
-import tensorflow as tf
+# import tensorflow as tf
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import transformers
 import string
@@ -18,7 +18,8 @@ import ast
 token = "AAAAAAAAAAAAAAAAAAAAAKi7WwEAAAAAJluNwwCTUYfqBY2t68om7gTYFeE%3D62xRr0Ay47fjpAxtEyDdzQIDomu1qzz4vwecSXl8g6EReT0e3R"
 
 
-client = MongoClient("mongodb://localhost:27017")
+# client = MongoClient("mongodb://localhost:27017")
+client = MongoClient("mongodb+srv://aavaig:aavaig2001@cluster0.s4h1n.mongodb.net/eytechathon2?retryWrites=true&w=majority")
 db = client.ey
 dashboard = db.dashboard
 dataset = pd.read_csv("Backend/Final_dataset.csv")
@@ -87,6 +88,17 @@ def predict_total_forest():
         preds = model.predict(values)
         return jsonify({"Result"  :  preds[0][0]} )
 
+@app.route("/state", methods=["POST"])
+def getStateData():
+    year = request.form.get("year")
+    data = list(dashboard.find())
+    final = {}
+    for i in data:
+        ds = i["Data"][str(year)]
+        final[i["Region"]] = ds 
+    # print(final)
+    return jsonify(final)
+
 
 @app.route("/all", methods=["GET"])
 def getAllData():
@@ -114,7 +126,8 @@ def getTweetData():
     headers["Accept"] = "application/json"
     headers["Authorization"] = f"Bearer {token}"
     resp = requests.get(url, headers=headers)
-    return jsonify(resp.content)
+    res = ast.literal_eval(resp.content.decode("utf-8"))
+    return jsonify(res)
 
 
 def strip_links(text):
@@ -144,7 +157,7 @@ def clean(x):
   else:
       return strip_all_entities(strip_links(x))
 
-@app.route("rating", methods=["GET"])
+@app.route("/rating", methods=["GET"])
 def getRating():
     url = "https://api.twitter.com/2/tweets/search/recent?query=forest"
     headers = CaseInsensitiveDict()

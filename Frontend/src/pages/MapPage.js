@@ -11,12 +11,14 @@ import {
   Container,
   Dropdown,
   Figure,
+  Form,
+  ListGroup,
   Row,
   Spinner,
   Table,
   ToggleButton,
 } from 'react-bootstrap';
-import { FaArrowUp } from 'react-icons/fa';
+import { FaArrowUp, FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import MapBox from '../components/MapBox';
 import LineChart from '../components/maps/LineChartJs/LineChart';
 import ComboChart from '../components/maps/ComboChart/ComboChart';
@@ -28,6 +30,9 @@ import LineChart3 from '../components/maps/LineChartJs/LineChart3';
 import IndiaVegetation from '../components/IndiaVegetation';
 import IndiaClimate from '../components/IndiaClimate';
 import CountUp from 'react-countup';
+import ComboChart2 from '../components/maps/ComboChart/ComboChart2';
+import Top5BarChart from '../components/maps/BarChart/Top5BarChart';
+import Bottom5BarChart from '../components/maps/BarChart/Bottom5BarChart';
 
 // const token = `sk.eyJ1IjoiYWF2YWlnMjA2OSIsImEiOiJja3gyNmU5dWMwOGNwMm5xazJsbTJkdndsIn0.P8U1m-KogLxOchRCfvY60Q`;
 
@@ -44,6 +49,14 @@ function MapPage() {
   const [aqiParams, setAqiParams] = useState([]);
   const [aqiArr, setAqiArr] = useState([]);
   const [comboChartData, setComboChartData] = useState([]);
+  const [comboChartData2, setComboChartData2] = useState([]);
+  const [descVal, setDescVal] = useState([]);
+  const [top5, setTop5] = useState([]);
+  const [bottom5, setBottom5] = useState([]);
+  const [topBottomParam, setTopBottomParam] = useState('Annual Rainfall');
+  const [topBottomYear, setTopBottomYear] = useState(2015);
+  const [stateApi, setStateApi] = useState({});
+  const [tweetNRating, setTweetNRating] = useState(null);
 
   const [inputYear, setInputYear] = useState(2022);
   const [inputArea, setInputArea] = useState('India');
@@ -133,7 +146,7 @@ function MapPage() {
 
     // aqiValArr.forEach((val, idx) => console.log(aqiValArr[idx].year));
 
-    console.log(aqiValArr);
+    // console.log(aqiValArr);
 
     setAqiArr(aqiValArr);
 
@@ -146,12 +159,78 @@ function MapPage() {
 
     // console.log(comboData);
     setComboChartData(comboData);
+  };
 
-    // const aqiVal =
+  const stateData = async (year) => {
+    const formData = new FormData();
+    formData.append('year', year);
 
-    // console.log(aqiVal);
+    const response = await fetch('http://127.0.0.1:5000/state', {
+      method: 'POST',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+      body: formData,
+    });
 
-    // console.log(aqiVal[1][1]);
+    const data = await response.json();
+
+    // console.log(data);
+    setStateApi(data);
+
+    const comboData = Object.keys(data)
+      .filter((state) => state !== 'India')
+      .map((state) => [
+        state,
+        data[state]['Total Forest Cover Area'],
+        data[state]['Annual Rainfall'],
+        data[state]['SO2'],
+        data[state]['Open Forest Area'],
+      ]);
+
+    // console.log(comboData);
+
+    setComboChartData2(comboData);
+
+    // console.log(topBottomParam);
+
+    updateStackedData(data);
+  };
+
+  const updateStackedData = (data) => {
+    const sortData = Object.keys(data)
+      .filter((state) => state !== 'India')
+      .map((state) => {
+        return [
+          state,
+          (data[state][topBottomParam] / data[state]['Geographical Area']) *
+            100,
+        ];
+      });
+
+    // console.log(sortData);
+
+    const sortedData = [...sortData];
+
+    sortedData.sort((a, b) => b[1] - a[1]);
+
+    // console.log(sortedData);
+    // console.log(sortedData[sortedData.length - 5]);
+
+    setTop5(sortedData.slice(0, 5));
+    setBottom5(sortedData.slice(sortedData.length - 5));
+
+    // console.log(sortedData.slice(0, 5));
+    // console.log(sortedData.slice(sortedData.length - 5));
+  };
+
+  const getTweetRating = async () => {
+    const response = await fetch('http://127.0.0.1:5000/rating');
+
+    const data = await response.json();
+    console.log(data);
+
+    setTweetNRating(data);
   };
 
   const onSubmitPostRequest = (e) => {
@@ -184,11 +263,12 @@ function MapPage() {
 
   useEffect(() => {
     fetchData();
-
-    fetch('http://127.0.0.1:5000/getTweets')
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+    getTweetRating();
   }, [dataApi.length]);
+
+  useEffect(() => {
+    stateData(topBottomYear);
+  }, [topBottomYear]);
 
   return (
     <React.Fragment>
@@ -262,32 +342,6 @@ function MapPage() {
             }}
           >
             <div className='map-toggle-buttons'>
-              {/* <Button
-                variant='primary'
-                onClick={() => setNormalSelected(true)}
-                // onClick={(e) => console.log('Clicked')}
-              >
-                Normal View
-              </Button>
-              <Button
-                variant='secondary'
-                onClick={(e) => setNormalSelected(false)}
-              >
-                Satellite View
-              </Button> */}
-              {/* <Button
-                variant='primary'
-                onClick={() => setNormalSelected(true)}
-                // onClick={(e) => console.log('Clicked')}
-              >
-                Normal View
-              </Button>
-              <Button
-                variant='secondary'
-                onClick={(e) => setNormalSelected(false)}
-              >
-                Satellite View
-              </Button> */}
               <select
                 value={view}
                 onChange={(e) => {
@@ -432,8 +486,6 @@ function MapPage() {
                     <GaugeChart aqiParams={aqiParams} aqiArr={aqiArr} />
                   </>
                 )}
-
-                <Card.Title></Card.Title>
               </Card.Body>
             </Card>
           </Col>
@@ -504,78 +556,245 @@ function MapPage() {
               </Card.Body>
             </Card>
           </Col>
+        </Row>
 
-          {/* <Col className='container-card'>
+        <Row className='map-page-row'>
+          <Col className='container-card'>
             <Card
               bg='light'
-              style={{ width: '90%', height: '100%' }}
+              style={{ width: '97%' }}
               className='mb-2 right-container__bottom box-shadow-main global-card-styles'
               // border='light'
             >
-              <Card.Body style={{ height: '100%' }}> */}
-          {/* <div className='prediction-title'>
-                  <h3>Enter Values To Predict</h3>
-                </div> */}
-          {/* <div className='prediction-input--year'>
-                 
-                </div>
-                <div className='prediction-input--area'>
-                 
-                </div>
-                <div className='prediction-submit'>
-                  
-                </div> */}
-          {/* <input
-                  type='text'
-                  value={inputYear}
-                  onChange={(e) => setInputYear(e.target.value)}
-                  id='input-year'
-                />
-                <input
-                  type='text'
-                  value={inputArea}
-                  onChange={(e) => setInputArea(e.target.value)}
-                  id='input-area'
-                />
-                <button type='submit' onClick={onSubmitPostRequest}>
-                  Go{' '}
-                </button> */}
-          {/* <div className='prediction-result'>{predictedResult}</div> */}
-          {/* </Card.Body>
+              <Card.Body>
+                {dataApi.length === 0 ? (
+                  <>
+                    <div
+                      className='spinner'
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '100%',
+                      }}
+                    >
+                      <Spinner animation='border' variant='primary' />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <ComboChart2 comboChartData={comboChartData2} />
+                  </>
+                )}
+              </Card.Body>
             </Card>
-          </Col> */}
+          </Col>
         </Row>
-        {/* <Row className='map-page-row'>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Username</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td colSpan={2}>Larry the Bird</td>
-                <td>@twitter</td>
-              </tr>
-            </tbody>
-          </Table>
-        </Row> */}
+
+        <Row className='map-page-row' style={{ paddingBottom: '10px' }}>
+          <Col xs lg={6}>
+            <div
+              className='select-dropdowns'
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '95%',
+                marginBottom: '5px',
+              }}
+            >
+              {/* parameters */}
+              <select
+                value={topBottomParam}
+                onChange={(e) => {
+                  setTopBottomParam(e.target.value);
+                  updateStackedData(stateApi);
+                }}
+              >
+                <option value='Annual Rainfall'>Annual Rainfall</option>
+                <option value='Geographical Area'>Geographical Area</option>
+                <option value='Mangrove Forest Area'>
+                  Mangrove Forest Area
+                </option>
+                <option value='Moderately Dense Forest Area'>
+                  Moderately Dense Forest Area
+                </option>
+                <option value='Open Forest Area'>Open Forest Area</option>
+                <option value='Scrub Land Area'>Scrub Land Area</option>
+                <option value='Total Forest Cover Area'>
+                  Total Forest Cover Area
+                </option>
+                <option value='Very Dense Forest Area'>
+                  Very Dense Forest Area
+                </option>
+              </select>
+
+              {/* years */}
+              <select
+                value={topBottomYear}
+                onChange={(e) => setTopBottomYear(e.target.value)}
+              >
+                <option value='1987'>1987</option>
+                <option value='1989'>1989</option>
+                <option value='1991'>1991</option>
+                <option value='1993'>1993</option>
+                <option value='1995'>1995</option>
+                <option value='1997'>1997</option>
+                <option value='1999'>1999</option>
+                <option value='2001'>2001</option>
+                <option value='2003'>2003</option>
+                <option value='2005'>2005</option>
+                <option value='2007'>2007</option>
+                <option value='2009'>2009</option>
+                <option value='2011'>2011</option>
+                <option value='2013'>2013</option>
+                <option value='2015'>2015</option>
+                <option value='2017'>2017</option>
+                <option value='2019'>2019</option>
+              </select>
+            </div>
+
+            <Row
+              style={{
+                marginBottom: '1rem',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              {' '}
+              <Card
+                bg='light'
+                style={{ width: '95%' }}
+                className='mb-2 right-container__bottom box-shadow-main global-card-styles'
+                // border='light'
+              >
+                <Card.Body>
+                  <Top5BarChart data={top5} title={topBottomParam} />
+                </Card.Body>
+              </Card>
+            </Row>
+
+            <Row>
+              {' '}
+              <Card
+                bg='light'
+                style={{ width: '95%' }}
+                className='right-container__bottom box-shadow-main global-card-styles'
+                // border='light'
+              >
+                <Card.Body>
+                  <Bottom5BarChart data={bottom5} title={topBottomParam} />
+                </Card.Body>
+              </Card>
+            </Row>
+          </Col>
+          <Col xs lg={6}>
+            {' '}
+            <Card
+              bg='light'
+              style={{ width: '97%' }}
+              className='right-container__bottom box-shadow-main global-card-styles'
+              // border='light'
+            >
+              <Card.Title
+                style={{
+                  marginTop: '1rem',
+                  textAlign: 'center',
+                  fontSize: '2rem',
+                  fontWeight: '700',
+                }}
+              >
+                Tweet Sentiment Analysis
+              </Card.Title>
+              <Card.Body>
+                <div
+                  className='twitter-form'
+                  style={{
+                    marginBottom: '1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Form.Control
+                    size='lg'
+                    type='text'
+                    placeholder='#Hashtag'
+                    style={{ width: '80%', marginRight: '2rem' }}
+                  />
+                  <Button
+                    variant='primary'
+                    type='submit'
+                    style={{ height: '100%' }}
+                  >
+                    Submit
+                  </Button>
+                </div>
+
+                <ListGroup as='ol'>
+                  {tweetNRating !== null &&
+                    Object.keys(tweetNRating).map((tweet) => {
+                      if (tweetNRating[tweet] === 'Positive') {
+                        return (
+                          <>
+                            <ListGroup.Item
+                              as='li'
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <div className='tweet'>
+                                <p> {tweet}</p>
+                              </div>
+
+                              <div className='tweet-icon'>
+                                <FaThumbsUp
+                                  style={{
+                                    height: '15px',
+                                    width: '15px',
+                                    color: 'green',
+                                  }}
+                                />
+                              </div>
+                            </ListGroup.Item>
+                          </>
+                        );
+                      }
+
+                      return (
+                        <>
+                          <ListGroup.Item
+                            as='li'
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <div className='tweet'>
+                              <p> {tweet}</p>
+                            </div>
+
+                            <div className='tweet-icon'>
+                              <FaThumbsDown
+                                style={{
+                                  height: '15px',
+                                  width: '15px',
+                                  color: 'red',
+                                }}
+                              />
+                            </div>
+                          </ListGroup.Item>
+                        </>
+                      );
+                    })}
+                </ListGroup>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
       </Container>
     </React.Fragment>
   );

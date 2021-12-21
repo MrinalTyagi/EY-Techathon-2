@@ -41,6 +41,8 @@ button {
   padding-top: 0;
   padding-left: 20px;
   padding-right: 20px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .wrapper-container {
@@ -109,7 +111,7 @@ button {
 }
 
 .map-page-row {
-  margin-bottom: 2rem;
+  margin-bottom: 5rem;
 }
 
 .map-toggle-buttons {
@@ -173,4 +175,8 @@ button {
   width: 60%;
   font-size: 1.4rem;
   border-radius: 4px;
+}
+
+.tweet {
+  width: 90%;
 }
