@@ -18,6 +18,7 @@ import {
   Table,
   ToggleButton,
 } from 'react-bootstrap';
+import logo from '../images/twitter-logo.png';
 import { FaArrowUp, FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import MapBox from '../components/MapBox';
 import LineChart from '../components/maps/LineChartJs/LineChart';
@@ -57,10 +58,13 @@ function MapPage() {
   const [topBottomYear, setTopBottomYear] = useState(2015);
   const [stateApi, setStateApi] = useState({});
   const [tweetNRating, setTweetNRating] = useState(null);
+  const [comboData2Year, setComboData2Year] = useState(2015);
 
   const [inputYear, setInputYear] = useState(2022);
   const [inputArea, setInputArea] = useState('India');
   const [predictedResult, setPredictedResult] = useState(665688.922946932);
+
+  const [hashtag, setHashtag] = useState('forest cover');
 
   const [view, setView] = useState('Normal View');
 
@@ -178,6 +182,23 @@ function MapPage() {
     // console.log(data);
     setStateApi(data);
 
+    updateStackedData(data);
+  };
+
+  const stateComboData = async (year) => {
+    const formData = new FormData();
+    formData.append('year', year);
+
+    const response = await fetch('http://127.0.0.1:5000/state', {
+      method: 'POST',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+
     const comboData = Object.keys(data)
       .filter((state) => state !== 'India')
       .map((state) => [
@@ -188,24 +209,16 @@ function MapPage() {
         data[state]['Open Forest Area'],
       ]);
 
-    // console.log(comboData);
-
     setComboChartData2(comboData);
-
-    // console.log(topBottomParam);
-
-    updateStackedData(data);
   };
 
   const updateStackedData = (data) => {
+    console.log('clicked here');
+
     const sortData = Object.keys(data)
       .filter((state) => state !== 'India')
       .map((state) => {
-        return [
-          state,
-          (data[state][topBottomParam] / data[state]['Geographical Area']) *
-            100,
-        ];
+        return [state, data[state][topBottomParam]];
       });
 
     // console.log(sortData);
@@ -225,7 +238,17 @@ function MapPage() {
   };
 
   const getTweetRating = async () => {
-    const response = await fetch('http://127.0.0.1:5000/rating');
+    const formData = new FormData();
+
+    formData.append('tag', hashtag);
+
+    const response = await fetch('http://127.0.0.1:5000/rating', {
+      method: 'POST',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+      body: formData,
+    });
 
     const data = await response.json();
     console.log(data);
@@ -269,6 +292,10 @@ function MapPage() {
   useEffect(() => {
     stateData(topBottomYear);
   }, [topBottomYear]);
+
+  useEffect(() => {
+    stateComboData(comboData2Year);
+  }, [comboData2Year]);
 
   return (
     <React.Fragment>
@@ -566,7 +593,34 @@ function MapPage() {
               className='mb-2 right-container__bottom box-shadow-main global-card-styles'
               // border='light'
             >
-              <Card.Body>
+              <Card.Body style={{ height: '40rem' }}>
+                <div className='select-dropdowns'>
+                  <select
+                    value={comboData2Year}
+                    onChange={(e) => {
+                      setComboData2Year(e.target.value);
+                    }}
+                  >
+                    <option value='1987'>1987</option>
+                    <option value='1989'>1989</option>
+                    <option value='1991'>1991</option>
+                    <option value='1993'>1993</option>
+                    <option value='1995'>1995</option>
+                    <option value='1997'>1997</option>
+                    <option value='1999'>1999</option>
+                    <option value='2001'>2001</option>
+                    <option value='2003'>2003</option>
+                    <option value='2005'>2005</option>
+                    <option value='2007'>2007</option>
+                    <option value='2009'>2009</option>
+                    <option value='2011'>2011</option>
+                    <option value='2013'>2013</option>
+                    <option value='2015'>2015</option>
+                    <option value='2017'>2017</option>
+                    <option value='2019'>2019</option>
+                  </select>
+                </div>
+
                 {dataApi.length === 0 ? (
                   <>
                     <div
@@ -652,41 +706,46 @@ function MapPage() {
                 <option value='2019'>2019</option>
               </select>
             </div>
-
-            <Row
+            <div
+              className='top-bottom-cards'
               style={{
-                marginBottom: '1rem',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
               }}
             >
-              {' '}
-              <Card
-                bg='light'
-                style={{ width: '95%' }}
-                className='mb-2 right-container__bottom box-shadow-main global-card-styles'
-                // border='light'
+              <Row
+                style={{
+                  marginBottom: '1rem',
+                }}
               >
-                <Card.Body>
-                  <Top5BarChart data={top5} title={topBottomParam} />
-                </Card.Body>
-              </Card>
-            </Row>
+                {' '}
+                <Card
+                  bg='light'
+                  style={{ width: '95%' }}
+                  className='mb-2 right-container__bottom box-shadow-main global-card-styles'
+                  // border='light'
+                >
+                  <Card.Body>
+                    <Top5BarChart data={top5} title={topBottomParam} />
+                  </Card.Body>
+                </Card>
+              </Row>
 
-            <Row>
-              {' '}
-              <Card
-                bg='light'
-                style={{ width: '95%' }}
-                className='right-container__bottom box-shadow-main global-card-styles'
-                // border='light'
-              >
-                <Card.Body>
-                  <Bottom5BarChart data={bottom5} title={topBottomParam} />
-                </Card.Body>
-              </Card>
-            </Row>
+              <Row>
+                {' '}
+                <Card
+                  bg='light'
+                  style={{ width: '95%' }}
+                  className='right-container__bottom box-shadow-main global-card-styles'
+                  // border='light'
+                >
+                  <Card.Body>
+                    <Bottom5BarChart data={bottom5} title={topBottomParam} />
+                  </Card.Body>
+                </Card>
+              </Row>
+            </div>
           </Col>
           <Col xs lg={6}>
             {' '}
@@ -704,6 +763,11 @@ function MapPage() {
                   fontWeight: '700',
                 }}
               >
+                <img
+                  src={logo}
+                  alt='twitter-logo'
+                  style={{ height: '30px', width: '30px' }}
+                />
                 Tweet Sentiment Analysis
               </Card.Title>
               <Card.Body>
@@ -721,11 +785,17 @@ function MapPage() {
                     type='text'
                     placeholder='#Hashtag'
                     style={{ width: '80%', marginRight: '2rem' }}
+                    value={hashtag}
+                    onChange={(e) => setHashtag(e.target.value)}
                   />
                   <Button
                     variant='primary'
                     type='submit'
                     style={{ height: '100%' }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      getTweetRating();
+                    }}
                   >
                     Submit
                   </Button>

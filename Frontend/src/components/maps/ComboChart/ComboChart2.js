@@ -27,13 +27,13 @@ function ComboChart2({ comboChartData }) {
           }
           data={[['State', 'TFC', 'AR', 'SO2', 'OFA'], ...comboChartData]}
           options={{
-            title: 'Relation b/w TFC, AR, SO2',
+            title: 'Relation b/w Total Forest Cover, AR, SO2',
             vAxis: {
               title: 'Annual Data',
               viewWindowMode: 'explicit',
               viewWindow: { min: 0 },
             },
-            hAxis: { title: 'Year' },
+            hAxis: { title: 'State' },
             seriesType: 'bars',
             // series: { 5: { type: 'line' }, 3: { type: 'line' } },
             //   series: {  },
@@ -41,7 +41,7 @@ function ComboChart2({ comboChartData }) {
             backgroundColor: 'transparent',
             chartArea: {
               width: '80%',
-              height: '70%',
+              height: '68%',
             },
             legend: {
               position: 'right',

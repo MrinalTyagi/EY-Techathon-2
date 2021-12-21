@@ -94,9 +94,11 @@ def getStateData():
     data = list(dashboard.find())
     final = {}
     for i in data:
-        ds = i["Data"][str(year)]
-        final[i["Region"]] = ds 
-    # print(final)
+        if i["Region"] == "Telangana":
+            continue
+        else:
+            ds = i["Data"][str(year)]
+            final[i["Region"]] = ds 
     return jsonify(final)
 
 
@@ -157,9 +159,10 @@ def clean(x):
   else:
       return strip_all_entities(strip_links(x))
 
-@app.route("/rating", methods=["GET"])
+@app.route("/rating", methods=["POST"])
 def getRating():
-    url = "https://api.twitter.com/2/tweets/search/recent?query=forest"
+    tag = request.form.get('tag')
+    url = f"https://api.twitter.com/2/tweets/search/recent?query={tag}"
     headers = CaseInsensitiveDict()
     headers["Accept"] = "application/json"
     headers["Authorization"] = f"Bearer {token}"
