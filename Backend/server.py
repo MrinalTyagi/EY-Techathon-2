@@ -22,12 +22,12 @@ token = "AAAAAAAAAAAAAAAAAAAAAKi7WwEAAAAAJluNwwCTUYfqBY2t68om7gTYFeE%3D62xRr0Ay4
 client = MongoClient("mongodb+srv://aavaig:aavaig2001@cluster0.s4h1n.mongodb.net/eytechathon2?retryWrites=true&w=majority")
 db = client.ey
 dashboard = db.dashboard
-dataset = pd.read_csv("Backend/Final_dataset.csv")
+dataset = pd.read_csv("Final_dataset.csv")
 state_list = dataset["State/UT"].values
 states = [i.lower() for i in state_list]
 app = Flask(__name__)
-tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
-model = AutoModelForSequenceClassification.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
+# tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
+# model = AutoModelForSequenceClassification.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
 
 clusters = {
     1987: 6,
@@ -159,41 +159,41 @@ def clean(x):
   else:
       return strip_all_entities(strip_links(x))
 
-@app.route("/rating", methods=["POST"])
-def getRating():
-    tag = request.form.get('tag')
-    url = f"https://api.twitter.com/2/tweets/search/recent?query={tag}"
-    headers = CaseInsensitiveDict()
-    headers["Accept"] = "application/json"
-    headers["Authorization"] = f"Bearer {token}"
-    resp = requests.get(url, headers=headers)
-    a = ast.literal_eval(resp.content.decode("utf-8"))
-    a = a["data"]
-    tweets = []
-    for i in a:
-        tweets.append(i["text"])
-    for i in range(len(tweets)):
-        tweets[i] = clean(tweets[i])
-    f = []
-    for i in tweets:
-        if(i == " " or i == ""):
-            continue
-        f.append(i)
-    df = pd.DataFrame(f, columns=["text"])
-    res = {}
-    for i in df.text.values:
-        encoded_input = tokenizer(i, return_tensors='pt')
-        output = model(**encoded_input)
-        scores = output[0][0].detach().numpy()
-        scores = softmax(scores)
-        scores = np.argmax(scores, axis = -1)
-        if(scores == 0):
-            res[str(i)] = "Positive"
-        elif scores == 1:
-            res[str(i)] = "Positive"
-        else:
-            res[str(i)] = "Negative"
-    return jsonify(res)
+# @app.route("/rating", methods=["POST"])
+# def getRating():
+#     tag = request.form.get('tag')
+#     url = f"https://api.twitter.com/2/tweets/search/recent?query={tag}"
+#     headers = CaseInsensitiveDict()
+#     headers["Accept"] = "application/json"
+#     headers["Authorization"] = f"Bearer {token}"
+#     resp = requests.get(url, headers=headers)
+#     a = ast.literal_eval(resp.content.decode("utf-8"))
+#     a = a["data"]
+#     tweets = []
+#     for i in a:
+#         tweets.append(i["text"])
+#     for i in range(len(tweets)):
+#         tweets[i] = clean(tweets[i])
+#     f = []
+#     for i in tweets:
+#         if(i == " " or i == ""):
+#             continue
+#         f.append(i)
+#     df = pd.DataFrame(f, columns=["text"])
+#     res = {}
+#     for i in df.text.values:
+#         encoded_input = tokenizer(i, return_tensors='pt')
+#         output = model(**encoded_input)
+#         scores = output[0][0].detach().numpy()
+#         scores = softmax(scores)
+#         scores = np.argmax(scores, axis = -1)
+#         if(scores == 0):
+#             res[str(i)] = "Positive"
+#         elif scores == 1:
+#             res[str(i)] = "Positive"
+#         else:
+#             res[str(i)] = "Negative"
+#     return jsonify(res)
     
 
 

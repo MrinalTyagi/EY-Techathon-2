@@ -1,12 +1,12 @@
 gunicorn==20.1.0
 scikit-learn==1.0.1
 Flask==2.0.2
-pymongo==4.0.1
+pymongo[srv]
 numpy==1.21.4
 pandas==1.3.4
 matplotlib==3.5.1
 flask_cors==3.0.10
-tensorflow==2.6.0
+tensorflow-cpu
 transformers==4.14.1
-request==2.26.0
-torch==1.10.1
+requests==2.26.0
+# https://download.pytorch.org/whl/cpu/torch-1.0.1.post2-cp37-cp37m-linux_x86_64.whl

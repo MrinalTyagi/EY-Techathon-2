@@ -658,7 +658,7 @@ function MapPage() {
             >
               {/* parameters */}
               <select
-                value={topBottomParam}
+                value='Mangrove Forest Area'
                 onChange={(e) => {
                   setTopBottomParam(e.target.value);
                   updateStackedData(stateApi);

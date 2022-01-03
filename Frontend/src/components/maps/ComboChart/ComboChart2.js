@@ -25,9 +25,9 @@ function ComboChart2({ comboChartData }) {
               </div>
             </>
           }
-          data={[['State', 'TFC', 'AR', 'SO2', 'OFA'], ...comboChartData]}
+          data={[['State', 'TFC', 'AR', 'SO2', 'DTFC'], ...comboChartData]}
           options={{
-            title: 'Relation b/w Total Forest Cover, AR, SO2',
+            title: 'Relation b/w Total Forest Cover, AR, SO2 & DTFC',
             vAxis: {
               title: 'Annual Data',
               viewWindowMode: 'explicit',
