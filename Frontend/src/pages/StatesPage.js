@@ -72,12 +72,15 @@ function StatesPage() {
     .join('')}Climate`;
 
   const fetchData = async () => {
-    const response = await fetch(`http://127.0.0.1:5000/${params.state}`, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `https://ey-flask-app.herokuapp.com/${params.state}`,
+      {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
     const data = await response.json();
 
     console.log(data.Data);
@@ -183,7 +186,7 @@ function StatesPage() {
 
     console.log(inputYear, inputArea);
 
-    fetch('http://127.0.0.1:5000/predict/TFA', {
+    fetch('https://ey-flask-app.herokuapp.com/predict/TFA', {
       method: 'POST',
       // mode: 'no-cors',
       headers: {
@@ -256,7 +259,10 @@ function StatesPage() {
                   </div>
 
                   <div className='prediction-input--submit'>
-                    <button type='submit' onClick={onSubmitPostRequest}>
+                    <button
+                      type='submit'
+                      // onClick={onSubmitPostRequest}
+                    >
                       Go{' '}
                     </button>
                   </div>
