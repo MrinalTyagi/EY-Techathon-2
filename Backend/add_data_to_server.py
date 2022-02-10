@@ -4,8 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import sys
 
-# client = MongoClient("mongodb://localhost:27017")
-client = MongoClient("mongodb+srv://aavaig:aavaig2001@cluster0.s4h1n.mongodb.net/eytechathon2?retryWrites=true&w=majority")
+client = MongoClient("mongodb://localhost:27017")
+# client = MongoClient("mongodb+srv://aavaig:aavaig2001@cluster0.s4h1n.mongodb.net/eytechathon2?retryWrites=true&w=majority")
 db = client.ey
 
 dataset = pd.read_csv("Backend/Final_dataset.csv")
