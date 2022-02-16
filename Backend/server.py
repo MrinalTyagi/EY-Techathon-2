@@ -27,8 +27,8 @@ dataset = pd.read_csv("Final_dataset.csv")
 state_list = dataset["State/UT"].values
 states = [i.lower() for i in state_list]
 app = Flask(__name__)
-tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
-model = AutoModelForSequenceClassification.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
+# tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
+# model = AutoModelForSequenceClassification.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
 
 clusters = {
     1987: 6,
