@@ -1,4 +1,4 @@
-from flask import Flask, json, request, jsonify
+from flask import Flask, json, request, jsonify, redirect
 import numpy as np
 import pandas as pd
 from flask_cors import CORS
@@ -18,17 +18,17 @@ import ast
 token = "AAAAAAAAAAAAAAAAAAAAAKi7WwEAAAAAJluNwwCTUYfqBY2t68om7gTYFeE%3D62xRr0Ay47fjpAxtEyDdzQIDomu1qzz4vwecSXl8g6EReT0e3R"
 
 
-client = MongoClient("mongodb://localhost:27017")
-# client = MongoClient("mongodb+srv://aavaig:aavaig2001@cluster0.s4h1n.mongodb.net/eytechathon2?retryWrites=true&w=majority")
+# client = MongoClient("mongodb://localhost:27017")
+client = MongoClient("mongodb+srv://aavaig:aavaig2001@cluster0.s4h1n.mongodb.net/eytechathon2?retryWrites=true&w=majority")
 db = client.ey
 dashboard = db.dashboard
-dataset = pd.read_csv("Final_dataset.csv")
+dataset = pd.read_csv("Final__dataset.csv")
 # dataset = pd.read_csv(os.path.join(os.getcwd(), 'Final_dataset.csv'))
 state_list = dataset["State/UT"].values
 states = [i.lower() for i in state_list]
 app = Flask(__name__)
-# tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
-# model = AutoModelForSequenceClassification.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
+tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
+model = AutoModelForSequenceClassification.from_pretrained("cardiffnlp/twitter-xlm-roberta-base-sentiment")
 
 clusters = {
     1987: 6,
@@ -54,6 +54,7 @@ CORS(app)
 
 @app.route("/", methods=["GET"])
 def get_home_data():
+    # print(app.env)
     data = list(dashboard.find({"Region" : "India"}, {'_id' : 0}))[0]
     return jsonify(data)
 
