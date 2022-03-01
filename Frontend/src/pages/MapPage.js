@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../App.css';
-import data from '../india.min.geo.json';
+import data from '../ind.geo.json';
 import GeoChart from '../components/GeoChart';
 import {
   Button,
@@ -34,10 +34,15 @@ import CountUp from 'react-countup';
 import ComboChart2 from '../components/maps/ComboChart/ComboChart2';
 import Top5BarChart from '../components/maps/BarChart/Top5BarChart';
 import Bottom5BarChart from '../components/maps/BarChart/Bottom5BarChart';
+import { useNavigate } from 'react-router-dom';
 
-// const token = `sk.eyJ1IjoiYWF2YWlnMjA2OSIsImEiOiJja3gyNmU5dWMwOGNwMm5xazJsbTJkdndsIn0.P8U1m-KogLxOchRCfvY60Q`;
+// const url = 'http://127.0.0.1:5000/';
+// const url = 'http://35.198.236.186:5000/';
+const url = 'https://aavaig-malhotra.fun/';
 
 function MapPage() {
+  let navigate = useNavigate();
+
   const [normalSelected, setNormalSelected] = useState(true);
 
   const [indiaData, setIndiaData] = useState([]);
@@ -69,7 +74,8 @@ function MapPage() {
   const [view, setView] = useState('Normal View');
 
   const fetchData = async () => {
-    const response = await fetch('https://ey-flask-app.herokuapp.com/', {
+    const response = await fetch(url, {
+      // mode: 'no-cors',
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
@@ -78,7 +84,7 @@ function MapPage() {
 
     const data = await response.json();
 
-    console.log(data.Data);
+    // console.log(data.Data);
 
     setYears(Object.keys(data.Data));
 
@@ -157,8 +163,8 @@ function MapPage() {
     const comboData = Object.keys(data.Data).map((year) => [
       year,
       data.Data[year]['Total Forest Cover Area'],
-      data.Data[year]['N_Annual_Rainfall'],
-      data.Data[year]['N_SPM'],
+      data.Data[year]['N_Annual_Rainfall'] * 12,
+      // data.Data[year]['N_SPM'],
     ]);
 
     // console.log(comboData);
@@ -169,8 +175,9 @@ function MapPage() {
     const formData = new FormData();
     formData.append('year', year);
 
-    const response = await fetch('https://ey-flask-app.herokuapp.com/state', {
+    const response = await fetch(`${url}state`, {
       method: 'POST',
+      // mode: 'no-cors',
       headers: {
         'Access-Control-Allow-Origin': '*',
       },
@@ -189,8 +196,9 @@ function MapPage() {
     const formData = new FormData();
     formData.append('year', year);
 
-    const response = await fetch('https://ey-flask-app.herokuapp.com/state', {
+    const response = await fetch(`${url}state`, {
       method: 'POST',
+      // mode: 'no-cors',
       headers: {
         'Access-Control-Allow-Origin': '*',
       },
@@ -209,18 +217,25 @@ function MapPage() {
         data[state]['Open Forest Area'],
       ]);
 
-    setComboChartData2(comboData);
+    const sortedComboData = comboData.sort((a, b) => {
+      // console.log(a, b);
+
+      return b[1] + b[2] + b[3] + b[4] - (a[1] + a[2] + a[3] + a[4]);
+    });
+
+    setComboChartData2(sortedComboData);
   };
 
-  const updateStackedData = (data) => {
-    console.log('clicked here');
+  const updateStackedData = (data, param = 'Annual Rainfall') => {
+    // console.log('clicked here');
+    // console.log(data, param);
 
     const sortData = Object.keys(data)
       .filter((state) => state !== 'India')
       .map((state) => {
-        return [state, data[state][topBottomParam]];
-      });
-
+        return [state, data[state][param]];
+      })
+      .filter((data) => data[1] !== 0);
     // console.log(sortData);
 
     const sortedData = [...sortData];
@@ -242,8 +257,9 @@ function MapPage() {
 
     formData.append('tag', hashtag);
 
-    const response = await fetch('https://ey-flask-app.herokuapp.com/rating', {
+    const response = await fetch(`${url}rating`, {
       method: 'POST',
+      // mode: 'no-cors',
       headers: {
         'Access-Control-Allow-Origin': '*',
       },
@@ -253,7 +269,22 @@ function MapPage() {
     const data = await response.json();
     console.log(data);
 
-    setTweetNRating(data);
+    let i = 1;
+    const filteredData = {};
+
+    for (const prop in data) {
+      if (i === 6) {
+        break;
+      }
+      console.log(prop);
+      filteredData[prop] = data[prop];
+      i++;
+    }
+
+    // const filteredData = data.filter((data, idx) => idx < 6);
+    console.log(filteredData);
+
+    setTweetNRating(filteredData);
   };
 
   const onSubmitPostRequest = (e) => {
@@ -264,9 +295,9 @@ function MapPage() {
     formData.append('year', inputYear);
     formData.append('area', inputArea);
 
-    console.log(inputYear, inputArea);
+    // console.log(inputYear, inputArea);
 
-    fetch('https://ey-flask-app.herokuapp.com/predict/TFA', {
+    fetch(`${url}predict/TFA`, {
       method: 'POST',
       // mode: 'no-cors',
       headers: {
@@ -279,9 +310,14 @@ function MapPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data['Result']);
+        // console.log(data['Result']);
         setPredictedResult(data['Result']);
       });
+  };
+
+  const onhandleAnalysisClick = (e) => {
+    e.preventDefault();
+    navigate('/detailed-analysis');
   };
 
   useEffect(() => {
@@ -290,6 +326,7 @@ function MapPage() {
   }, [dataApi.length]);
 
   useEffect(() => {
+    // console.log(topBottomYear);
     stateData(topBottomYear);
   }, [topBottomYear]);
 
@@ -351,11 +388,19 @@ function MapPage() {
                   </div>
 
                   <div className='prediction-input--submit'>
-                    <button
-                      type='submit'
-                      // onClick={onSubmitPostRequest}
-                    >
+                    <button type='submit' onClick={onSubmitPostRequest}>
                       Go{' '}
+                    </button>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+            <Row style={{ marginTop: '5rem' }}>
+              <Col>
+                <div className='prediction-form'>
+                  <div className='prediction-input--submit'>
+                    <button type='submit' onClick={onhandleAnalysisClick}>
+                      Detailed Analysis Click Here
                     </button>
                   </div>
                 </div>
@@ -372,6 +417,7 @@ function MapPage() {
               flexDirection: 'column',
               justifyContent: 'center',
               position: 'relative',
+              padding: '2.5rem 0 0 0',
             }}
             className='mid-col'
           >
@@ -379,7 +425,7 @@ function MapPage() {
               <select
                 value={view}
                 onChange={(e) => {
-                  console.log(e.target.value);
+                  // console.log(e.target.value);
                   setView(e.target.value);
                 }}
               >
@@ -391,38 +437,42 @@ function MapPage() {
                 <option value='Climate Timelapse'>Climate Timelapse</option>
               </select>
             </div>
-            <></>
-            {view === 'Normal View' && (
-              <>
-                <GeoChart data={data} />
-              </>
-            )}
-            {view === 'Satellite View' && (
-              <>
-                <MapBox />
-              </>
-            )}
-            {view === 'Vegetation Timelapse' && (
-              <>
-                <IndiaVegetation />
-              </>
-            )}
-            {view === 'Climate Timelapse' && (
-              <>
-                <IndiaClimate />
-              </>
-            )}
+            <div style={{ height: '100%', overflow: 'hidden' }}>
+              {view === 'Normal View' && (
+                <>
+                  <GeoChart data={data} />
+                </>
+              )}
+              {view === 'Satellite View' && (
+                <>
+                  <MapBox />
+                </>
+              )}
+              {view === 'Vegetation Timelapse' && (
+                <>
+                  <IndiaVegetation />
+                </>
+              )}
+              {view === 'Climate Timelapse' && (
+                <>
+                  <IndiaClimate />
+                </>
+              )}
+            </div>
           </Col>
 
           {/* col-right */}
           <Col style={{ height: '100%' }} className='right-col'>
             <Row style={{ height: '100%' }}>
-              <Col style={{ height: '100%' }} className='right-container'>
+              <Col
+                style={{ height: '100%', padding: ' 2rem' }}
+                className='right-container'
+              >
                 <Card
                   bg='light'
                   // border='light'
                   style={{
-                    width: '90%',
+                    width: '100%',
                     border: '1px transparent',
                     height: '100%',
                     overflow: 'hidden',
@@ -458,7 +508,7 @@ function MapPage() {
                 </Card>
                 <Card
                   bg='light'
-                  style={{ width: '90%' }}
+                  style={{ width: '100%' }}
                   className='mb-2 right-container__bottom box-shadow-main global-card-styles'
                   // border='light'
                 >
@@ -491,12 +541,12 @@ function MapPage() {
           </Col>
         </Row>
 
-        {/* 4-cards */}
+        {/* 3-cards */}
         <Row className='map-page-row map-page-row-mid-1'>
-          <Col className='container-card aqi-meter'>
+          <Col className='container-card aqi-meter' style={{ padding: '2rem' }}>
             <Card
               bg='light'
-              style={{ width: '90%' }}
+              style={{ width: '100%' }}
               className='mb-2 right-container__bottom box-shadow-main global-card-styles aqi-meter-card'
               // border='light'
             >
@@ -523,10 +573,13 @@ function MapPage() {
               </Card.Body>
             </Card>
           </Col>
-          <Col className='container-card land-cover-graph'>
+          <Col
+            className='container-card land-cover-graph'
+            style={{ padding: '2rem' }}
+          >
             <Card
               bg='light'
-              style={{ width: '90%' }}
+              style={{ width: '100%' }}
               className='mb-2 right-container__bottom box-shadow-main global-card-styles land-cover-graph-card'
               // border='light'
             >
@@ -558,10 +611,13 @@ function MapPage() {
               </Card.Body>
             </Card>
           </Col>
-          <Col className='container-card rainfall-graph'>
+          <Col
+            className='container-card rainfall-graph'
+            style={{ padding: '2rem' }}
+          >
             <Card
               bg='light'
-              style={{ width: '90%' }}
+              style={{ width: '100%', height: '100%' }}
               className='mb-2 right-container__bottom box-shadow-main global-card-styles rainfall-graph-card'
               // border='light'
             >
@@ -581,27 +637,25 @@ function MapPage() {
                     </div>
                   </>
                 ) : (
-                  <>
+                  <div style={{ height: '100% !important' }}>
                     <LineChart2 rainfall={rainfall} />
-                  </>
+                  </div>
                 )}
-
-                <Card.Title></Card.Title>
               </Card.Body>
             </Card>
           </Col>
         </Row>
 
         <Row className='map-page-row'>
-          <Col className='container-card'>
+          <Col className='container-card' style={{ padding: '2rem' }}>
             <Card
               bg='light'
-              style={{ width: '97%' }}
+              style={{ width: '100%' }}
               className='mb-2 right-container__bottom box-shadow-main global-card-styles combo-chart-card'
               // border='light'
             >
-              <Card.Body style={{ height: '40rem' }}>
-                <div className='select-dropdowns'>
+              <Card.Body style={{ height: '45rem' }}>
+                <div className='select-dropdowns combo-select-year'>
                   <select
                     value={comboData2Year}
                     onChange={(e) => {
@@ -652,23 +706,35 @@ function MapPage() {
           </Col>
         </Row>
 
-        <Row className='map-page-row' style={{ paddingBottom: '10px' }}>
-          <Col xs lg={6}>
+        <Row
+          className='map-page-row map-page-bottom-row'
+          style={{ padding: '2rem 0' }}
+        >
+          <Col
+            xs
+            lg={6}
+            className='map-page-bottom-container-1'
+            // style={{ marginRight: '5px' }}
+          >
             <div
               className='select-dropdowns'
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                width: '95%',
-                marginBottom: '5px',
+                width: '100%',
+                padding: '0 2rem',
+                marginBottom: '15px',
+                margin: '0 auto',
               }}
             >
               {/* parameters */}
               <select
-                value='Mangrove Forest Area'
+                value={topBottomParam}
                 onChange={(e) => {
+                  // console.log(e.target.value);
+                  const param = e.target.value;
                   setTopBottomParam(e.target.value);
-                  updateStackedData(stateApi);
+                  updateStackedData(stateApi, param);
                 }}
               >
                 <option value='Annual Rainfall'>Annual Rainfall</option>
@@ -719,18 +785,25 @@ function MapPage() {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
+                // alignItems: 'center',
+                width: '100%',
+                flex: '1',
               }}
             >
               <Row
                 style={{
                   marginBottom: '1rem',
+                  // width: '100%',
+                  display: 'flex',
+                  justifyContent: 'end',
+                  padding: '2rem',
                 }}
                 className='map-row-bottom-left-container'
               >
                 {' '}
                 <Card
                   bg='light'
-                  style={{ width: '95%' }}
+                  style={{ width: '100%' }}
                   className='mb-2 right-container__bottom box-shadow-main global-card-styles map-row-bottom-card'
                   // border='light'
                 >
@@ -740,11 +813,20 @@ function MapPage() {
                 </Card>
               </Row>
 
-              <Row className='map-row-bottom-left-container'>
+              <Row
+                className='map-row-bottom-left-container'
+                style={{
+                  display: 'flex',
+                  justifyContent: 'end',
+                  padding: '2rem',
+                }}
+              >
                 {' '}
                 <Card
                   bg='light'
-                  style={{ width: '95%' }}
+                  style={{
+                    width: '100%',
+                  }}
                   className='right-container__bottom box-shadow-main global-card-styles map-row-bottom-card'
                   // border='light'
                 >
@@ -755,11 +837,16 @@ function MapPage() {
               </Row>
             </div>
           </Col>
-          <Col xs lg={6}>
+          <Col
+            xs
+            lg={6}
+            className='map-page-bottom-container-2'
+            style={{ padding: '0 2rem 2rem 2rem' }}
+          >
             {' '}
             <Card
               bg='light'
-              style={{ width: '97%' }}
+              style={{ width: '100%' }}
               className='right-container__bottom box-shadow-main global-card-styles map-row-bottom-card'
               // border='light'
             >
@@ -792,24 +879,34 @@ function MapPage() {
                     size='lg'
                     type='text'
                     placeholder='#Hashtag'
-                    style={{ width: '80%', marginRight: '2rem' }}
+                    style={{
+                      width: '80%',
+                      marginRight: '2rem',
+                      fontSize: '16px',
+                    }}
                     value={hashtag}
                     onChange={(e) => setHashtag(e.target.value)}
                   />
                   <Button
                     variant='primary'
                     type='submit'
-                    style={{ height: '100%' }}
+                    style={{
+                      height: '35px',
+                      fontSize: '16px',
+                      textTransform: 'uppercase',
+                      width: '25%',
+                      marginBottom: 0,
+                    }}
                     onClick={(e) => {
                       e.preventDefault();
-                      // getTweetRating();
+                      getTweetRating();
                     }}
                   >
                     Submit
                   </Button>
                 </div>
 
-                <ListGroup as='ol'>
+                <ListGroup as='ol' style={{ fontSize: '16px' }}>
                   {tweetNRating !== null &&
                     Object.keys(tweetNRating).map((tweet) => {
                       if (tweetNRating[tweet] === 'Positive') {
